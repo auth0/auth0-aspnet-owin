@@ -1,0 +1,13 @@
+[Oo]bj
+[Bb]in
+*.user
+target
+
+*.suo
+
+*.cache
+
+*.bak
+
+TestResults/
+packages
