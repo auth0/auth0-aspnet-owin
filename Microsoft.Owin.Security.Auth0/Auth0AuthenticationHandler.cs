@@ -59,10 +59,13 @@ namespace Microsoft.Owin.Security.Auth0
                 }
 
                 // OAuth2 10.12 CSRF
+                var authType = Options.AuthenticationType;
+                Options.AuthenticationType = "auth0";
                 if (!ValidateCorrelationId(extra, _logger))
                 {
                     return new AuthenticationTicket(null, extra);
                 }
+                Options.AuthenticationType = authType;
 
                 var tokenRequestParameters = string.Format(
                     CultureInfo.InvariantCulture,
@@ -113,42 +116,27 @@ namespace Microsoft.Owin.Security.Auth0
                 context.Identity = new ClaimsIdentity(
                     new[]
                     {
-                        new Claim(ClaimTypes.NameIdentifier, context.Id, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType),
-                        new Claim(ClaimTypes.Name, context.Name, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType),
-                        new Claim("user_id", context.Id, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType),
+                        new Claim(ClaimTypes.NameIdentifier, context.Id, "http://www.w3.org/2001/XMLSchema#string", context.Connection),
+                        new Claim(ClaimTypes.Name, context.Name, "http://www.w3.org/2001/XMLSchema#string", context.Connection),
+                        new Claim("user_id", context.Id, "http://www.w3.org/2001/XMLSchema#string", context.Connection),
                     },
-                    Options.AuthenticationType,
+                    context.Connection,
                     ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);
+
                 if (!string.IsNullOrWhiteSpace(context.Email))
                 {
-                    context.Identity.AddClaim(new Claim("email", context.Email, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                    context.Identity.AddClaim(new Claim(ClaimTypes.Email, context.Email, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim("email", context.Email, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Email, context.Email, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
                 }
-                if (!string.IsNullOrWhiteSpace(context.FirstName))
-                {
-                    context.Identity.AddClaim(new Claim("given_name", context.FirstName, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                }
-                if (!string.IsNullOrWhiteSpace(context.LastName))
-                {
-                    context.Identity.AddClaim(new Claim("family_name", context.LastName, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                }
-                if (!string.IsNullOrWhiteSpace(context.Connection))
-                {
-                    context.Identity.AddClaim(new Claim("connection", context.Connection, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                }
-                if (!string.IsNullOrWhiteSpace(context.Provider))
-                {
-                    context.Identity.AddClaim(new Claim("provider", context.Provider, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                }
-                if (!string.IsNullOrWhiteSpace(context.ProviderAccessToken))
-                {
-                    context.Identity.AddClaim(new Claim("provider_access_token", context.ProviderAccessToken, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                }
-                if (Options.SaveIdToken && !string.IsNullOrWhiteSpace(context.IdToken))
-                {
-                    context.Identity.AddClaim(new Claim("id_token", context.IdToken, "http://www.w3.org/2001/XMLSchema#string", Options.AuthenticationType));
-                }
+
+                if (!string.IsNullOrWhiteSpace(context.FirstName)) context.Identity.AddClaim(new Claim("given_name", context.FirstName, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                if (!string.IsNullOrWhiteSpace(context.LastName)) context.Identity.AddClaim(new Claim("family_name", context.LastName, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                if (!string.IsNullOrWhiteSpace(context.Connection)) context.Identity.AddClaim(new Claim("connection", context.Connection, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                if (!string.IsNullOrWhiteSpace(context.Picture)) context.Identity.AddClaim(new Claim("picture", context.Picture, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                if (!string.IsNullOrWhiteSpace(context.Provider)) context.Identity.AddClaim(new Claim("provider", context.Provider, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                if (!string.IsNullOrWhiteSpace(context.ProviderAccessToken)) context.Identity.AddClaim(new Claim("provider_access_token", context.ProviderAccessToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+                if (Options.SaveIdToken && !string.IsNullOrWhiteSpace(context.IdToken)) context.Identity.AddClaim(new Claim("id_token", context.IdToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
 
                 await Options.Provider.Authenticated(context);
 
@@ -190,10 +178,11 @@ namespace Microsoft.Owin.Security.Auth0
                     extra.RedirectUrl = currentUri;
                 }
 
-                extra.Properties.Add("connection", Options.Connection);
-
                 // OAuth2 10.12 CSRF
+                var authType = Options.AuthenticationType;
+                Options.AuthenticationType = "auth0";
                 GenerateCorrelationId(extra);
+                Options.AuthenticationType = authType;
 
                 string state = Options.StateDataHandler.Protect(extra);
 
@@ -214,10 +203,6 @@ namespace Microsoft.Owin.Security.Auth0
         public async Task<bool> InvokeReturnPath()
         {
             _logger.WriteVerbose("InvokeReturnPath");
-
-            var extra = UnprotectExtraData();
-            if (extra == null) return false;
-            if (extra.Properties["connection"] != Options.Connection) return false;
 
             var model = await Authenticate();
 
@@ -256,7 +241,7 @@ namespace Microsoft.Owin.Security.Auth0
                 }
                 else
                 {
-                    Response.Redirect("/Account/ExternalLoginCallback?loginProvider=Auth0");
+                    Response.Redirect("/Account/ExternalLoginCallback?loginProvider=" + model.Identity.FindFirst("connection").Value);
                 }
                 
                 context.RequestCompleted();

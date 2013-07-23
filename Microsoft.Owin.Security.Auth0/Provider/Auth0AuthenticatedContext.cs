@@ -24,6 +24,7 @@ namespace Microsoft.Owin.Security.Auth0
             LastName = PropertyValueIfExists("family_name", userAsDictionary);
             Email = PropertyValueIfExists("email", userAsDictionary);
             Connection = user["identities"][0]["connection"].ToString();
+            Picture = PropertyValueIfExists("picture", userAsDictionary);
             Provider = user["identities"][0]["provider"].ToString();
             ProviderAccessToken = user["identities"][0]["access_token"] != null ? user["identities"][0]["access_token"].ToString() : null;
             IdToken = idToken;
@@ -38,6 +39,7 @@ namespace Microsoft.Owin.Security.Auth0
         public string LastName { get; private set; }
         public string Email { get; private set; }
         public string Connection { get; private set; }
+        public string Picture { get; private set; }
         public string Provider { get; private set; }
         public string ProviderAccessToken { get; private set; }
         public string IdToken { get; private set; }

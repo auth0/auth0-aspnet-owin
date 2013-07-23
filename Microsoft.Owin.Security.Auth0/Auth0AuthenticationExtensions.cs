@@ -14,7 +14,8 @@ namespace Owin
              string connection,
              string displayName,
              bool saveIdToken = true,
-             string scopes = "openid")
+             string scopes = "openid",
+             IAuth0AuthenticationProvider provider = null)
         {
 
             app.Use(typeof(Auth0AuthenticationMiddleware), app, new Auth0AuthenticationOptions
@@ -24,10 +25,11 @@ namespace Owin
                 Domain = domain,
                 Caption = displayName,
                 Connection = connection,
-                AuthenticationType = displayName,
+                AuthenticationType = connection,
                 SaveIdToken = saveIdToken,
                 Scopes = scopes.Split(' '),
                 SignInAsAuthenticationType = app.GetDefaultSignInAsAuthenticationType(),
+                Provider = provider
             });
 
             return app;
