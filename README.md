@@ -27,3 +27,22 @@ public void ConfigureAuth(IAppBuilder app)
 ~~~
 
 The clientid, secrets and connection names can be found on Auth0 dashboard (http://app.auth0.com).
+
+## Customizing the Claims Identity
+
+You can change/add new claims by attaching to OnAuthenticated
+
+~~~c#
+    var provider = new Microsoft.Owin.Security.Auth0.Auth0AuthenticationProvider
+    {
+        OnAuthenticated = async (context) =>
+        {
+            context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
+            context.Identity.AddClaim("something", context.User["another_prop"].ToString());
+            // context.User is a JObject with the original user object from Auth0
+        }
+    };
+
+    // specify the provider
+    app.AddAuth0Authentication(provider: provider, clientId: ... );
+~~~
