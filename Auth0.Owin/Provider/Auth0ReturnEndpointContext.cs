@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Owin.Security.Provider;
+using Microsoft.Owin.Security;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     public class Auth0ReturnEndpointContext : ReturnEndpointContext
     {

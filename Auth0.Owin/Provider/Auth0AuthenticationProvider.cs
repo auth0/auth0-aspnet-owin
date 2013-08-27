@@ -17,7 +17,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     public class Auth0AuthenticationProvider : IAuth0AuthenticationProvider
     {

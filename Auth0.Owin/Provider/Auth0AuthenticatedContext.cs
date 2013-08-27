@@ -5,8 +5,9 @@ using System.Security.Claims;
 using Microsoft.Owin.Security.Provider;
 
 using Newtonsoft.Json.Linq;
+using Microsoft.Owin.Security;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     public class Auth0AuthenticatedContext : BaseContext
     {

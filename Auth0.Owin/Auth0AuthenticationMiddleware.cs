@@ -1,11 +1,11 @@
-﻿using Microsoft.Owin.Logging;
+﻿using Microsoft.Owin;
+using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security.DataHandler;
 using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.Infrastructure;
-
 using Owin;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     public class Auth0AuthenticationMiddleware : AuthenticationMiddleware<Auth0AuthenticationOptions>
     {

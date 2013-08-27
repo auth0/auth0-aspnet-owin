@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     public interface IAuth0AuthenticationProvider
     {

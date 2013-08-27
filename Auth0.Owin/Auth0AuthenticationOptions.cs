@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Owin.Security;
+using System.Collections.Generic;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     public class Auth0AuthenticationOptions : AuthenticationOptions
     {

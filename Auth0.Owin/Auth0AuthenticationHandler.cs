@@ -11,8 +11,9 @@ using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security.Infrastructure;
 
 using Newtonsoft.Json.Linq;
+using Microsoft.Owin.Security;
 
-namespace Microsoft.Owin.Security.Auth0
+namespace Auth0.Owin
 {
     internal class Auth0AuthenticationHandler : AuthenticationHandler<Auth0AuthenticationOptions>
     {

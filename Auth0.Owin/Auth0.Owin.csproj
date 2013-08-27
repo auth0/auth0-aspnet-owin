@@ -7,8 +7,8 @@
     <ProjectGuid>{49650EA7-69AE-4EA6-A308-810C4738D663}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.Owin.Security.Auth0</RootNamespace>
-    <AssemblyName>Microsoft.Owin.Security.Auth0</AssemblyName>
+    <RootNamespace>Auth0.Owin</RootNamespace>
+    <AssemblyName>Auth0.Owin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>

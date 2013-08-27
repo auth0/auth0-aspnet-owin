@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Auth0;
+using Auth0.Owin;
 
 namespace Owin
 {
