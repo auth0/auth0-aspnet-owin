@@ -6,12 +6,13 @@ using Microsoft.Owin.Security.Provider;
 
 using Newtonsoft.Json.Linq;
 using Microsoft.Owin.Security;
+using Microsoft.Owin;
 
 namespace Auth0.Owin
 {
     public class Auth0AuthenticatedContext : BaseContext
     {
-        public Auth0AuthenticatedContext(IDictionary<string, object> environment, JObject user, string accessToken, string idToken)
+        public Auth0AuthenticatedContext(IOwinContext environment, JObject user, string accessToken, string idToken)
             : base(environment)
         {
             IDictionary<string, JToken> userAsDictionary = user;
@@ -46,7 +47,7 @@ namespace Auth0.Owin
         public string IdToken { get; private set; }
 
         public ClaimsIdentity Identity { get; set; }
-        public AuthenticationExtra Extra { get; set; }
+        public AuthenticationProperties Properties { get; set; }
 
         private static string PropertyValueIfExists(string property, IDictionary<string, JToken> dictionary)
         {

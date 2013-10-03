@@ -12,6 +12,10 @@ using Microsoft.Owin.Security.Infrastructure;
 
 using Newtonsoft.Json.Linq;
 using Microsoft.Owin.Security;
+using Microsoft.Owin;
+using System.Net.Http;
+using Microsoft.Owin.Helpers;
+using Microsoft.Owin.Infrastructure;
 
 namespace Auth0.Owin
 {
@@ -19,41 +23,45 @@ namespace Auth0.Owin
     {
         private const string AuthorizeEndpoint = "https://{0}/authorize";
         private const string TokenEndpoint = "https://{0}/oauth/token";
-        private const string GraphApiEndpoint = "https://{0}/userinfo";
+        private const string UserInfoEndpoint = "https://{0}/userinfo";
+
+        private readonly HttpClient _httpClient;
 
         private readonly ILogger _logger;
 
-        public Auth0AuthenticationHandler(ILogger logger)
+        public Auth0AuthenticationHandler(HttpClient httpClient, ILogger logger)
         {
+            _httpClient = httpClient;
             _logger = logger;
         }
 
-        public override async Task<bool> Invoke()
+        public override async Task<bool> InvokeAsync()
         {
-            if (Options.ReturnEndpointPath != null &&
-                String.Equals(Options.ReturnEndpointPath, Request.Path, StringComparison.OrdinalIgnoreCase))
-            {
-                return await InvokeReturnPath();
-            }
-            return false;
+            return await InvokeReturnPath();
         }
 
-        protected override async Task<AuthenticationTicket> AuthenticateCore()
+        protected override async Task<AuthenticationTicket> AuthenticateCoreAsync()
         {
             _logger.WriteVerbose("AuthenticateCore");
 
-            AuthenticationExtra extra = null;
+            AuthenticationProperties extra = null;
             try
             {
                 string code = null;
-                IDictionary<string, string[]> query = Request.GetQuery();
-                string[] values;
-                if (query.TryGetValue("code", out values) && values != null && values.Length == 1)
+                string state = null;
+                IReadableStringCollection query = Request.Query;
+                IList<string> values = query.GetValues("code");
+                if (values != null && values.Count == 1)
                 {
                     code = values[0];
                 }
+                values = query.GetValues("state");
+                if (values != null && values.Count == 1)
+                {
+                    state = values[0];
+                }
 
-                extra = UnprotectExtraData();
+                extra = Options.StateDataFormat.Unprotect(state);
                 if (extra == null)
                 {
                     return null;
@@ -76,44 +84,29 @@ namespace Auth0.Owin
                     Uri.EscapeDataString(Options.ClientSecret),
                     code);
 
-                WebRequest tokenRequest = WebRequest.Create(string.Format(TokenEndpoint, Options.Domain));
-                tokenRequest.Method = "POST";
-                tokenRequest.ContentType = "application/x-www-form-urlencoded";
-                tokenRequest.ContentLength = tokenRequestParameters.Length;
-                tokenRequest.Timeout = Options.BackChannelRequestTimeOut;
-                using (var bodyStream = new StreamWriter(tokenRequest.GetRequestStream()))
-                {
-                    bodyStream.Write(tokenRequestParameters);
-                }
+                var body = new Dictionary<string,string> {
+                    { "client_id", Options.ClientId },
+                    { "redirect_uri", GenerateRedirectUri() },
+                    { "client_secret", Options.ClientSecret },
+                    { "code", code },
+                    { "grant_type", "authorization_code" }
+                };
 
-                WebResponse tokenResponse = await tokenRequest.GetResponseAsync();
-                string accessToken = null;
-                string idToken = null;
+                HttpResponseMessage tokenResponse = await _httpClient.PostAsync(string.Format(TokenEndpoint, Options.Domain), new FormUrlEncodedContent(body), Request.CallCancelled);
+                tokenResponse.EnsureSuccessStatusCode();
+                string text = await tokenResponse.Content.ReadAsStringAsync();
+                JObject tokens = JObject.Parse(text);
 
-                using (var reader = new StreamReader(tokenResponse.GetResponseStream()))
-                {
-                    string oauthTokenResponse = await reader.ReadToEndAsync();
-                    JObject oauth2Token = JObject.Parse(oauthTokenResponse);
-                    accessToken = oauth2Token["access_token"].Value<string>();
-                    idToken = oauth2Token["id_token"] != null ? oauth2Token["id_token"].Value<string>() : null;
-                }
+                string accessToken = tokens["access_token"].Value<string>();
+                string idToken = tokens["id_token"] != null ? tokens["id_token"].Value<string>() : null;
 
-                if (string.IsNullOrWhiteSpace(accessToken))
-                {
-                    _logger.WriteWarning("Access token was not found");
-                    return new AuthenticationTicket(null, extra);
-                }
+                HttpResponseMessage graphResponse = await _httpClient.GetAsync(
+                   string.Format(UserInfoEndpoint, Options.Domain) + "?access_token=" + Uri.EscapeDataString(accessToken), Request.CallCancelled);
+                graphResponse.EnsureSuccessStatusCode();
+                text = await graphResponse.Content.ReadAsStringAsync();
+                JObject user = JObject.Parse(text);
 
-                JObject accountInformation;
-                var accountInformationRequest = WebRequest.Create(string.Format(GraphApiEndpoint, Options.Domain) + "?access_token=" + Uri.EscapeDataString(accessToken));
-                accountInformationRequest.Timeout = Options.BackChannelRequestTimeOut;
-                var accountInformationResponse = await accountInformationRequest.GetResponseAsync();
-                using (var reader = new StreamReader(accountInformationResponse.GetResponseStream()))
-                {
-                    accountInformation = JObject.Parse(await reader.ReadToEndAsync());
-                }
-
-                var context = new Auth0AuthenticatedContext(Request.Environment, accountInformation, accessToken, idToken);
+                var context = new Auth0AuthenticatedContext(Context, user, accessToken, idToken);
                 context.Identity = new ClaimsIdentity(
                     new[]
                     {
@@ -141,9 +134,9 @@ namespace Auth0.Owin
 
                 await Options.Provider.Authenticated(context);
 
-                context.Extra = extra;
+                context.Properties = extra;
 
-                return new AuthenticationTicket(context.Identity, context.Extra);
+                return new AuthenticationTicket(context.Identity, context.Properties);
             }
             catch (Exception ex)
             {
@@ -152,13 +145,13 @@ namespace Auth0.Owin
             }
         }
 
-        protected override async Task ApplyResponseChallenge()
+        protected override Task ApplyResponseChallengeAsync()
         {
             _logger.WriteVerbose("ApplyResponseChallenge");
 
             if (Response.StatusCode != 401)
             {
-                return;
+                return Task.FromResult<object>(null);
             }
 
             var challenge = Helper.LookupChallenge(Options.AuthenticationType, Options.AuthenticationMode);
@@ -173,7 +166,7 @@ namespace Auth0.Owin
 
                 string redirectUri = requestPrefix + Request.PathBase + Options.ReturnEndpointPath;
 
-                var extra = challenge.Extra;
+                var extra = challenge.Properties;
                 if (string.IsNullOrEmpty(extra.RedirectUrl))
                 {
                     extra.RedirectUrl = currentUri;
@@ -185,7 +178,7 @@ namespace Auth0.Owin
                 GenerateCorrelationId(extra);
                 Options.AuthenticationType = authType;
 
-                string state = Options.StateDataHandler.Protect(extra);
+                string state = Options.StateDataFormat.Protect(extra);
 
                 string authorizationEndpoint =
                     string.Format(AuthorizeEndpoint, Options.Domain) +
@@ -196,72 +189,55 @@ namespace Auth0.Owin
                         "&state=" + Uri.EscapeDataString(state) +
                         (Options.Scopes.Length > 0 ? "&scope=" + Uri.EscapeDataString(string.Join(" ", Options.Scopes)) : "");
 
-                Response.StatusCode = 302;
-                Response.SetHeader("Location", authorizationEndpoint);
+                Response.Redirect(authorizationEndpoint);
             }
+
+            return Task.FromResult<object>(null);
         }
 
         public async Task<bool> InvokeReturnPath()
         {
             _logger.WriteVerbose("InvokeReturnPath");
 
-            var model = await Authenticate();
-
-            var context = new Auth0ReturnEndpointContext(Request.Environment, model, ErrorDetails);
-            context.SignInAsAuthenticationType = Options.SignInAsAuthenticationType;
-            if (model.Extra != null)
+            if (Options.ReturnEndpointPath != null &&
+                String.Equals(Options.ReturnEndpointPath, Request.Path, StringComparison.OrdinalIgnoreCase))
             {
-                context.RedirectUri = model.Extra.RedirectUrl;
-                model.Extra.RedirectUrl = null;
-            }
-            
-            await Options.Provider.ReturnEndpoint(context);
 
-            if (context.SignInAsAuthenticationType != null && context.Identity != null)
-            {
-                ClaimsIdentity signInIdentity = context.Identity;
-                if (!string.Equals(signInIdentity.AuthenticationType, context.SignInAsAuthenticationType, StringComparison.Ordinal))
-                {
-                    signInIdentity = new ClaimsIdentity(signInIdentity.Claims, context.SignInAsAuthenticationType, signInIdentity.NameClaimType, signInIdentity.RoleClaimType);
-                }
-                if (context.Extra != null)
-                {
-                    Response.Grant(signInIdentity, context.Extra);
-                }
-                else
-                {
-                    Response.Grant(signInIdentity);
-                }
-            }
+                AuthenticationTicket ticket = await AuthenticateAsync();
 
-            if (!context.IsRequestCompleted)
-            {
-                if (context.RedirectUri != null)
-                {
-                    Response.Redirect(context.RedirectUri);
-                }
-                else
-                {
-                    Response.Redirect("/Account/ExternalLoginCallback?loginProvider=" + model.Identity.FindFirst("connection").Value);
-                }
-                
-                context.RequestCompleted();
-            } 
+                var context = new Auth0ReturnEndpointContext(Context, ticket, ErrorDetails);
+                context.SignInAsAuthenticationType = Options.SignInAsAuthenticationType;
+                context.RedirectUri = ticket.Properties.RedirectUrl;
 
-            return context.IsRequestCompleted;
-        }
+                await Options.Provider.ReturnEndpoint(context);
 
-        private AuthenticationExtra UnprotectExtraData()
-        {
-            IDictionary<string, string[]> query = Request.GetQuery();
-            string state = null;
-            string[] values;
-            if (query.TryGetValue("state", out values) && values != null && values.Length == 1)
-            {
-                state = values[0];
+                if (context.SignInAsAuthenticationType != null && context.Identity != null)
+                {
+                    ClaimsIdentity signInIdentity = context.Identity;
+                    if (!string.Equals(signInIdentity.AuthenticationType, context.SignInAsAuthenticationType, StringComparison.Ordinal))
+                    {
+                        signInIdentity = new ClaimsIdentity(signInIdentity.Claims, context.SignInAsAuthenticationType, signInIdentity.NameClaimType, signInIdentity.RoleClaimType);
+                    }
+
+                    Context.Authentication.SignIn(context.Properties, signInIdentity);
+                }
+
+                if (!context.IsRequestCompleted && context.RedirectUri != null)
+                {
+                    string redirectUri = context.RedirectUri;
+                    if (ErrorDetails != null)
+                    {
+                        redirectUri = WebUtilities.AddQueryString(redirectUri, ErrorDetails);
+                    }
+
+                    Response.Redirect(redirectUri);
+                    context.RequestCompleted();
+                }
+
+                return context.IsRequestCompleted;
             }
 
-            return Options.StateDataHandler.Unprotect(state);
+            return false;
         }
 
         private string GenerateRedirectUri()
