@@ -16,6 +16,8 @@ using Microsoft.Owin;
 using System.Net.Http;
 using Microsoft.Owin.Helpers;
 using Microsoft.Owin.Infrastructure;
+using System.Collections.Specialized;
+using System.Web;
 
 namespace Auth0.Owin
 {
@@ -44,7 +46,6 @@ namespace Auth0.Owin
         {
             _logger.WriteVerbose("AuthenticateCore");
 
-            AuthenticationProperties extra = null;
             try
             {
                 string code = null;
@@ -61,19 +62,9 @@ namespace Auth0.Owin
                     state = values[0];
                 }
 
-                extra = Options.StateDataFormat.Unprotect(state);
-                if (extra == null)
-                {
-                    return null;
-                }
-
                 // OAuth2 10.12 CSRF
                 var authType = Options.AuthenticationType;
                 Options.AuthenticationType = "auth0";
-                if (!ValidateCorrelationId(extra, _logger))
-                {
-                    return new AuthenticationTicket(null, extra);
-                }
                 Options.AuthenticationType = authType;
 
                 var tokenRequestParameters = string.Format(
@@ -134,14 +125,12 @@ namespace Auth0.Owin
 
                 await Options.Provider.Authenticated(context);
 
-                context.Properties = extra;
-
                 return new AuthenticationTicket(context.Identity, context.Properties);
             }
             catch (Exception ex)
             {
                 _logger.WriteWarning("Authentication failed", ex);
-                return new AuthenticationTicket(null, extra);
+                return new AuthenticationTicket(null, null);
             }
         }
 
@@ -159,7 +148,7 @@ namespace Auth0.Owin
             if (challenge != null)
             {
                 string requestPrefix = Request.Scheme + "://" + Request.Host;
-                string currentQueryString = Request.QueryString;
+                string currentQueryString = Request.QueryString.ToString();
                 string currentUri = string.IsNullOrEmpty(currentQueryString)
                     ? requestPrefix + Request.PathBase + Request.Path
                     : requestPrefix + Request.PathBase + Request.Path + "?" + currentQueryString;
@@ -167,9 +156,9 @@ namespace Auth0.Owin
                 string redirectUri = requestPrefix + Request.PathBase + Options.ReturnEndpointPath;
 
                 var extra = challenge.Properties;
-                if (string.IsNullOrEmpty(extra.RedirectUrl))
+                if (string.IsNullOrEmpty(extra.RedirectUri))
                 {
-                    extra.RedirectUrl = currentUri;
+                    extra.RedirectUri = currentUri;
                 }
 
                 // OAuth2 10.12 CSRF
@@ -200,14 +189,19 @@ namespace Auth0.Owin
             _logger.WriteVerbose("InvokeReturnPath");
 
             if (Options.ReturnEndpointPath != null &&
-                String.Equals(Options.ReturnEndpointPath, Request.Path, StringComparison.OrdinalIgnoreCase))
+                String.Equals(Options.ReturnEndpointPath, Request.Path.ToString(), StringComparison.OrdinalIgnoreCase))
             {
 
                 AuthenticationTicket ticket = await AuthenticateAsync();
+                if (ticket == null)
+                {
+                    _logger.WriteWarning("Invalid return state, unable to redirect.");
+                    Response.StatusCode = 500;
+                    return true;
+                }
 
-                var context = new Auth0ReturnEndpointContext(Context, ticket, ErrorDetails);
+                var context = new Auth0ReturnEndpointContext(Context, ticket);
                 context.SignInAsAuthenticationType = Options.SignInAsAuthenticationType;
-                context.RedirectUri = ticket.Properties.RedirectUrl;
 
                 await Options.Provider.ReturnEndpoint(context);
 
@@ -219,15 +213,30 @@ namespace Auth0.Owin
                         signInIdentity = new ClaimsIdentity(signInIdentity.Claims, context.SignInAsAuthenticationType, signInIdentity.NameClaimType, signInIdentity.RoleClaimType);
                     }
 
-                    Context.Authentication.SignIn(context.Properties, signInIdentity);
+                    Context.Authentication.SignIn(context.Properties ?? new AuthenticationProperties(), signInIdentity);
                 }
 
-                if (!context.IsRequestCompleted && context.RedirectUri != null)
+                if (!context.IsRequestCompleted)
                 {
                     string redirectUri = context.RedirectUri;
-                    if (ErrorDetails != null)
+
+                    if (string.IsNullOrEmpty(redirectUri))
                     {
-                        redirectUri = WebUtilities.AddQueryString(redirectUri, ErrorDetails);
+                        if (Request.Query["state"] != null && Request.Query["state"].StartsWith("ru="))
+                        {
+                            var state = HttpUtility.ParseQueryString(Request.Query["state"]);
+                            redirectUri = state["ru"];
+                        }
+                        else
+                        {
+                            redirectUri = "/";
+                        }
+                    }
+
+                    if (context.Identity == null)
+                    {
+                        // add a redirect hint that sign-in failed in some way
+                        redirectUri = WebUtilities.AddQueryString(redirectUri, "error", "access_denied");
                     }
 
                     Response.Redirect(redirectUri);

@@ -9,9 +9,8 @@ namespace Auth0.Owin
     {
         public Auth0ReturnEndpointContext(
             IOwinContext context,
-            AuthenticationTicket ticket,
-            IDictionary<string, string> errorDetails)
-            : base(context, ticket, errorDetails)
+            AuthenticationTicket ticket)
+            : base(context, ticket)
         {
         }
     }
