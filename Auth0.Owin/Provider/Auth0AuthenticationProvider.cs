@@ -1,44 +1,66 @@
-﻿// <copyright file="Auth0AuthenticationProvider.cs" company="Microsoft Open Technologies, Inc.">
-// Copyright 2011-2013 Microsoft Open Technologies, Inc. All rights reserved.
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// </copyright>
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Auth0.Owin
 {
+    /// <summary>
+    /// Default <see cref="IAuth0AuthenticationProvider"/> implementation.
+    /// </summary>
     public class Auth0AuthenticationProvider : IAuth0AuthenticationProvider
     {
+        /// <summary>
+        /// Initializes a <see cref="Auth0AuthenticationProvider"/>
+        /// </summary>
         public Auth0AuthenticationProvider()
         {
-            OnAuthenticated = async _ => { };
-            OnReturnEndpoint = async _ => { };
+            OnAuthenticated = context => Task.FromResult<object>(null);
+            OnReturnEndpoint = context => Task.FromResult<object>(null);
+            OnApplyRedirect = context =>
+                context.Response.Redirect(context.RedirectUri);
         }
 
+        /// <summary>
+        /// Gets or sets the function that is invoked when the Authenticated method is invoked.
+        /// </summary>
         public Func<Auth0AuthenticatedContext, Task> OnAuthenticated { get; set; }
 
+        /// <summary>
+        /// Gets or sets the function that is invoked when the ReturnEndpoint method is invoked.
+        /// </summary>
         public Func<Auth0ReturnEndpointContext, Task> OnReturnEndpoint { get; set; }
 
+        /// <summary>
+        /// Gets or sets the delegate that is invoked when the ApplyRedirect method is invoked.
+        /// </summary>
+        public Action<Auth0ApplyRedirectContext> OnApplyRedirect { get; set; }
+
+        /// <summary>
+        /// Invoked whenever Auth0 succesfully authenticates a user
+        /// </summary>
+        /// <param name="context">Contains information about the login session as well as the user <see cref="System.Security.Claims.ClaimsIdentity"/>.</param>
+        /// <returns>A <see cref="Task"/> representing the completed operation.</returns>
         public virtual Task Authenticated(Auth0AuthenticatedContext context)
         {
             return OnAuthenticated(context);
         }
 
+        /// <summary>
+        /// Invoked prior to the <see cref="System.Security.Claims.ClaimsIdentity"/> being saved in a local cookie and the browser being redirected to the originally requested URL.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>A <see cref="Task"/> representing the completed operation.</returns>
         public virtual Task ReturnEndpoint(Auth0ReturnEndpointContext context)
         {
             return OnReturnEndpoint(context);
+        }
+
+        /// <summary>
+        /// Called when a Challenge causes a redirect to authorize endpoint in the Auth0 middleware
+        /// </summary>
+        /// <param name="context">Contains redirect URI and <see cref="AuthenticationProperties"/> of the challenge </param>
+        public virtual void ApplyRedirect(Auth0ApplyRedirectContext context)
+        {
+            OnApplyRedirect(context);
         }
     }
 }

@@ -1,57 +1,86 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-
-using Microsoft.Owin.Security.Provider;
-
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using Microsoft.Owin;
+using Microsoft.Owin.Security.Provider;
+using Newtonsoft.Json.Linq;
+using System.Security.Claims;
 
 namespace Auth0.Owin
 {
+    /// <summary>
+    /// Contains information about the login session as well as the user <see cref="System.Security.Claims.ClaimsIdentity"/>.
+    /// </summary>
     public class Auth0AuthenticatedContext : BaseContext
     {
-        public Auth0AuthenticatedContext(IOwinContext environment, JObject user, string accessToken, string idToken)
-            : base(environment)
+        /// <summary>
+        /// Initializes a <see cref="Auth0AuthenticatedContext"/>
+        /// </summary>
+        /// <param name="context">The OWIN environment</param>
+        /// <param name="user">The JSON-serialized user</param>
+        /// <param name="accessToken">Auth0 Access token</param>
+        /// <param name="expires">Seconds until expiration</param>
+        public Auth0AuthenticatedContext(IOwinContext context, JObject user, string accessToken, string idToken)
+            : base(context)
         {
-            IDictionary<string, JToken> userAsDictionary = user;
-
             User = user;
             AccessToken = accessToken;
+            IdToken = idToken;
 
-            Id = User["user_id"].ToString();
-            Name = PropertyValueIfExists("name", userAsDictionary);
-            FirstName = PropertyValueIfExists("given_name", userAsDictionary);
-            LastName = PropertyValueIfExists("family_name", userAsDictionary);
-            Email = PropertyValueIfExists("email", userAsDictionary);
-            Connection = user["identities"][0]["connection"].ToString();
-            Picture = PropertyValueIfExists("picture", userAsDictionary);
+            Id = TryGetValue(user, "user_id");
+            Name = TryGetValue(user, "name");
+            FirstName = TryGetValue(user, "given_name");
+            LastName = TryGetValue(user, "family_name");
+            Email = TryGetValue(user, "email");
+            Picture = TryGetValue(user, "picture");
+
+            Connection = Connection = user["identities"][0]["connection"].ToString();
             Provider = user["identities"][0]["provider"].ToString();
             ProviderAccessToken = user["identities"][0]["access_token"] != null ? user["identities"][0]["access_token"].ToString() : null;
-            IdToken = idToken;
         }
 
+        /// <summary>
+        /// Gets the JSON-serialized user
+        /// </summary>
         public JObject User { get; private set; }
+
+        /// <summary>
+        /// Gets the Auth0 access token
+        /// </summary>
         public string AccessToken { get; private set; }
 
         public string Id { get; private set; }
+
         public string Name { get; private set; }
+        
         public string FirstName { get; private set; }
+        
         public string LastName { get; private set; }
+        
         public string Email { get; private set; }
+        
         public string Connection { get; private set; }
+        
         public string Picture { get; private set; }
+        
         public string Provider { get; private set; }
+        
         public string ProviderAccessToken { get; private set; }
+        
         public string IdToken { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="ClaimsIdentity"/> representing the user
+        /// </summary>
         public ClaimsIdentity Identity { get; set; }
+
+        /// <summary>
+        /// Gets or sets a property bag for common authentication properties
+        /// </summary>
         public AuthenticationProperties Properties { get; set; }
 
-        private static string PropertyValueIfExists(string property, IDictionary<string, JToken> dictionary)
+        private static string TryGetValue(JObject user, string propertyName)
         {
-            return dictionary.ContainsKey(property) ? dictionary[property].ToString() : null;
+            JToken value;
+            return user.TryGetValue(propertyName, out value) ? value.ToString() : null;
         }
     }
 }
