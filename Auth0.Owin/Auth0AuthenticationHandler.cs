@@ -177,7 +177,7 @@ namespace Auth0.Owin
                 string authorizationEndpoint =
                     string.Format(AuthorizeEndpoint, Options.Domain) +
                         "?client_id=" + Uri.EscapeDataString(Options.ClientId) +
-                        "&connection=" + Uri.EscapeDataString(Options.Connection) +
+                        "&connection=" + Uri.EscapeDataString(Options.Connection ?? string.Empty) +
                         "&response_type=code" +
                         "&redirect_uri=" + Uri.EscapeDataString(redirectUri) +
                         "&state=" + Uri.EscapeDataString(state) +

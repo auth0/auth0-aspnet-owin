@@ -46,8 +46,8 @@ namespace Owin
             string clientId,
             string clientSecret,
             string domain,
-            string connection,
             string displayName,
+            string connection = null,
             bool saveIdToken = true,
             string scopes = "openid",
             IAuth0AuthenticationProvider provider = null)
@@ -61,7 +61,7 @@ namespace Owin
                     Domain = domain,
                     Caption = displayName,
                     Connection = connection,
-                    AuthenticationType = connection,
+                    AuthenticationType = string.IsNullOrEmpty(connection) ? Constants.DefaultAuthenticationType : connection,
                     SaveIdToken = saveIdToken,
                     Scope = scopes.Split(' '),
                     Provider = provider
