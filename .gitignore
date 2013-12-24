@@ -9,5 +9,8 @@ target
 
 *.bak
 
+*.mdf
+*.ldf
+
 TestResults/
 packages

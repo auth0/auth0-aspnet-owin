@@ -34,13 +34,13 @@ namespace MvcSample
 
             //app.UseGoogleAuthentication();
 
-            // add Google (with Auth0)
+            // use Auth0
             app.AddAuth0Authentication(
                 clientId:       "YOUR_CLIENT_ID",
                 clientSecret:   "YOUR_CLIENT_SECRET", 
                 domain:         "YOUR_TENANT.auth0.com", 
-                connection:     "google-oauth2", 
-                displayName:    "Google (with Auth0)");
+                //connection:   "google-oauth2", // OPTIONAL
+                displayName:    "Auth0");
 
         }
     }
