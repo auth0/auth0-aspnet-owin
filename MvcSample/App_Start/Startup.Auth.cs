@@ -36,9 +36,9 @@ namespace MvcSample
 
             // add Google (with Auth0)
             app.AddAuth0Authentication(
-                clientId:       "oHDqHR7JompKEQFHfwk1n0JYgbowVouo",
-                clientSecret:   "VkWbAzwvRIgwMybtUDsGSjIQYtKZajoeSzhDGVWDiMiU7Y4AScJfXy20TV2XIeY6", 
-                domain:         "iaco82.auth0.com", 
+                clientId:       "YOUR_CLIENT_ID",
+                clientSecret:   "YOUR_CLIENT_SECRET", 
+                domain:         "YOUR_TENANT.auth0.com", 
                 connection:     "google-oauth2", 
                 displayName:    "Google (with Auth0)");
 
