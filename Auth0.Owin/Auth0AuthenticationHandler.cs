@@ -57,10 +57,10 @@ namespace Auth0.Owin
                 }
 
                 // OAuth2 10.12 CSRF
-                if (!ValidateCorrelationId(properties, _logger))
-                {
-                    return new AuthenticationTicket(null, properties);
-                }
+                //if (!ValidateCorrelationId(properties, _logger))
+                //{
+                //    return new AuthenticationTicket(null, properties);
+                //}
 
                 string requestPrefix = Request.Scheme + "://" + Request.Host;
                 string redirectUri = requestPrefix + Request.PathBase + Options.CallbackPath;
@@ -167,7 +167,7 @@ namespace Auth0.Owin
                 }
 
                 // OAuth2 10.12 CSRF
-                GenerateCorrelationId(properties);
+                //GenerateCorrelationId(properties);
 
                 // comma separated
                 string scope = string.Join(",", Options.Scope);
