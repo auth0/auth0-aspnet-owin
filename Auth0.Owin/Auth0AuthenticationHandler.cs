@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Auth0.Owin
 {
@@ -50,11 +51,11 @@ namespace Auth0.Owin
                     state = values[0];
                 }
 
-                properties = Options.StateDataFormat.Unprotect(state);
-                if (properties == null)
-                {
-                    return null;
-                }
+                //properties = Options.StateDataFormat.Unprotect(state);
+                //if (properties == null)
+                //{
+                //    return null;
+                //}
 
                 // OAuth2 10.12 CSRF
                 //if (!ValidateCorrelationId(properties, _logger))
@@ -121,7 +122,7 @@ namespace Auth0.Owin
                 if (!string.IsNullOrWhiteSpace(context.ProviderAccessToken)) context.Identity.AddClaim(new Claim("provider_access_token", context.ProviderAccessToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
                 if (Options.SaveIdToken && !string.IsNullOrWhiteSpace(context.IdToken)) context.Identity.AddClaim(new Claim("id_token", context.IdToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
 
-                context.Properties = properties;
+                context.Properties = properties ?? new AuthenticationProperties();
 
                 await Options.Provider.Authenticated(context);
 
@@ -213,7 +214,7 @@ namespace Auth0.Owin
 
                 var context = new Auth0ReturnEndpointContext(Context, ticket);
                 context.SignInAsAuthenticationType = Options.SignInAsAuthenticationType;
-                context.RedirectUri = ticket.Properties.RedirectUri;
+                context.RedirectUri = ticket.Properties != null ? ticket.Properties.RedirectUri : null;
 
                 await Options.Provider.ReturnEndpoint(context);
 
@@ -228,9 +229,9 @@ namespace Auth0.Owin
                     Context.Authentication.SignIn(context.Properties, grantIdentity);
                 }
 
-                if (!context.IsRequestCompleted && context.RedirectUri != null)
+                if (!context.IsRequestCompleted)
                 {
-                    string redirectUri = context.RedirectUri;
+                    string redirectUri = context.RedirectUri ?? GenerateReturnUri();
                     if (context.Identity == null)
                     {
                         // add a redirect hint that sign-in failed in some way
@@ -251,6 +252,17 @@ namespace Auth0.Owin
 
             string redirectUri = requestPrefix + RequestPathBase + Options.CallbackPath; // + "?state=" + Uri.EscapeDataString(Options.StateDataHandler.Protect(state));            
             return redirectUri;
+        }
+
+        private string GenerateReturnUri()
+        {
+            if (Request.Query["state"] != null && Request.Query["state"].StartsWith("ru="))
+            {
+                var state = HttpUtility.ParseQueryString(Request.Query["state"]);
+                return state["ru"];
+            }
+
+            return "/Account/ExternalLoginCallback"; // TODO: take from parameter
         }
     }
 }

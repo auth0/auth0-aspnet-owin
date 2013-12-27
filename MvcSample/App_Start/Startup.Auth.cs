@@ -2,6 +2,7 @@
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
+using System.Configuration;
 
 namespace MvcSample
 {
@@ -34,13 +35,25 @@ namespace MvcSample
 
             //app.UseGoogleAuthentication();
 
-            // add Google (with Auth0)
+            // use Auth0
+            var provider = new Auth0.Owin.Auth0AuthenticationProvider
+            {
+                OnAuthenticated = async (context) =>
+                {
+                    // context.User is a JObject with the original user object from Auth0
+                    context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
+                    context.Identity.AddClaim(
+                        new System.Security.Claims.Claim(
+                            "friendly_name",
+                            string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+                }
+            };
+
             app.AddAuth0Authentication(
-                clientId:       "YOUR_CLIENT_ID",
-                clientSecret:   "YOUR_CLIENT_SECRET", 
-                domain:         "YOUR_TENANT.auth0.com", 
-                //connection:   "google-oauth2", // OPTIONAL
-                displayName:    "Auth0");
+                clientId:       ConfigurationManager.AppSettings["auth0:ClientId"],
+                clientSecret:   ConfigurationManager.AppSettings["auth0:ClientSecret"],
+                domain:         ConfigurationManager.AppSettings["auth0:Domain"],
+                provider:       provider);
         }
     }
 }

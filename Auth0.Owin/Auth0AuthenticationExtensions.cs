@@ -46,7 +46,7 @@ namespace Owin
             string clientId,
             string clientSecret,
             string domain,
-            string displayName,
+            string displayName = "Auth0",
             string connection = null,
             bool saveIdToken = true,
             string scopes = "openid",
