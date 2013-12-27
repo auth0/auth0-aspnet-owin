@@ -63,9 +63,6 @@ namespace Auth0.Owin
                 //    return new AuthenticationTicket(null, properties);
                 //}
 
-                string requestPrefix = Request.Scheme + "://" + Request.Host;
-                string redirectUri = requestPrefix + Request.PathBase + Options.CallbackPath;
-
                 var tokenRequestParameters = string.Format(
                     CultureInfo.InvariantCulture,
                     "client_id={0}&redirect_uri={1}&client_secret={2}&code={3}&grant_type=authorization_code",
