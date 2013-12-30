@@ -8,7 +8,7 @@ Owin/Katana Authentication Handler for Auth0. Plug into the ASP.NET 4.5 Owin inf
 
 1- Create a new ASP.NET 4.5 Project.
 
-2- Go to web.config and set `auth0:ClientId`, `auth0:ClientSecret`, `auth0:Domain` and `auth0:AppCallback` from appSettings.
+2- Go to Web.config and set `auth0:ClientId`, `auth0:ClientSecret` and `auth0:Domain` from appSettings.
 
 > Note: These settings can be found on <a href="http://app.auth0.com" target="_new">Auth0 dashboard</a>.
 
@@ -38,7 +38,7 @@ public void ConfigureAuth(IAppBuilder app)
 	var widget = new Auth0Widget({
 	    domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
 	    clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-	    callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
+	    callbackURL:  'http://localhost:PORT/signin-auth0'
 	});
 </script>
 ~~~
@@ -103,7 +103,7 @@ And set same value when the widget is shown:
 	var widget = new Auth0Widget({
         domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
         clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-        callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
+        callbackURL:  'http://localhost:PORT/signin-auth0'
     });
 
     function showWidget() {
