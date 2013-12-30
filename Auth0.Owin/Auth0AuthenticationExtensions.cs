@@ -1,4 +1,5 @@
 ﻿using Auth0.Owin;
+using Microsoft.Owin;
 using System;
 
 namespace Owin
@@ -36,16 +37,19 @@ namespace Owin
         /// <param name="clientId">The client ID assigned by Auth0</param>
         /// <param name="clientSecret">The client secret assigned by Auth0</param>
         /// <param name="domain"></param>
+        /// <param name="externalLoginCallback"></param>
         /// <param name="connection"></param>
         /// <param name="displayName"></param>
         /// <param name="saveIdToken"></param>
         /// <param name="scopes"></param>
+        /// <param name="provider"></param>
         /// <returns>The updated <see cref="IAppBuilder"/></returns>
         public static IAppBuilder AddAuth0Authentication(
             this IAppBuilder app,
             string clientId,
             string clientSecret,
             string domain,
+            string externalLoginCallback = "/Account/ExternalLoginCallback",
             string displayName = "Auth0",
             string connection = null,
             bool saveIdToken = true,
@@ -59,6 +63,7 @@ namespace Owin
                     ClientId = clientId,
                     ClientSecret = clientSecret,
                     Domain = domain,
+                    ExternalLoginCallback = new PathString(externalLoginCallback),
                     Caption = displayName,
                     Connection = connection,
                     AuthenticationType = string.IsNullOrEmpty(connection) ? Constants.DefaultAuthenticationType : connection,

@@ -228,7 +228,7 @@ namespace Auth0.Owin
 
                 if (!context.IsRequestCompleted)
                 {
-                    string redirectUri = context.RedirectUri ?? GenerateReturnUri();
+                    string redirectUri = context.RedirectUri ?? Options.ExternalLoginCallback.ToString();
                     if (context.Identity == null)
                     {
                         // add a redirect hint that sign-in failed in some way
@@ -249,17 +249,6 @@ namespace Auth0.Owin
 
             string redirectUri = requestPrefix + RequestPathBase + Options.CallbackPath; // + "?state=" + Uri.EscapeDataString(Options.StateDataHandler.Protect(state));            
             return redirectUri;
-        }
-
-        private string GenerateReturnUri()
-        {
-            if (Request.Query["state"] != null && Request.Query["state"].StartsWith("ru="))
-            {
-                var state = HttpUtility.ParseQueryString(Request.Query["state"]);
-                return state["ru"];
-            }
-
-            return "/Account/ExternalLoginCallback"; // TODO: take from parameter
         }
     }
 }
