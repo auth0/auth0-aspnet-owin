@@ -40,7 +40,7 @@ namespace MvcSample
             // use Auth0
             var provider = new Auth0.Owin.Auth0AuthenticationProvider
             {
-                OnAuthenticated = async (context) =>
+                OnAuthenticated = (context) =>
                 {
                     // context.User is a JObject with the original user object from Auth0
                     context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
@@ -48,8 +48,10 @@ namespace MvcSample
                         new System.Security.Claims.Claim(
                             "friendly_name",
                             string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+
+                    return System.Threading.Tasks.Task.FromResult(0);
                 },
-                OnReturnEndpoint = async (context) =>
+                OnReturnEndpoint = (context) =>
                 {
                     // xsrf validation
                     if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("xsrf="))
@@ -60,6 +62,8 @@ namespace MvcSample
                             throw new HttpException(400, "invalid xsrf");
                         }
                     }
+
+                    return System.Threading.Tasks.Task.FromResult(0);
                 }
             };
 
@@ -67,7 +71,7 @@ namespace MvcSample
                 clientId:       ConfigurationManager.AppSettings["auth0:ClientId"],
                 clientSecret:   ConfigurationManager.AppSettings["auth0:ClientSecret"],
                 domain:         ConfigurationManager.AppSettings["auth0:Domain"],
-                redirectPath:   "/Auth0Account/ExternalLoginCallback",
+                //redirectPath: "/Account/ExternalLoginCallback",
                 provider:       provider);
         }
     }
