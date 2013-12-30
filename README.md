@@ -57,7 +57,7 @@ You can change/add new claims by attaching to `OnAuthenticated`:
 ~~~c#
 var provider = new Auth0.Owin.Auth0AuthenticationProvider
 {
-	OnAuthenticated = async (context) =>
+	OnAuthenticated = (context) =>
 	{
 		// context.User is a JObject with the original user object from Auth0
 		context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
@@ -65,6 +65,8 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 			new System.Security.Claims.Claim(
 				"friendly_name",
 				string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+		
+		return System.Threading.Tasks.Task.FromResult(0);
 	}
 };
 
@@ -79,7 +81,7 @@ You can validate the xsrf value by attaching to `OnReturnEndpoint`:
 ~~~c#
 var provider = new Auth0.Owin.Auth0AuthenticationProvider
 {
-	OnReturnEndpoint = async (context) =>
+	OnReturnEndpoint = (context) =>
 	{
 		// xsrf validation
 		if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("xsrf="))
@@ -90,6 +92,8 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 				throw new HttpException(400, "invalid xsrf");
 			}
 		}
+		
+		return System.Threading.Tasks.Task.FromResult(0);
 	}
 };
 
