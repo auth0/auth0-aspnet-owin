@@ -24,10 +24,10 @@ public void ConfigureAuth(IAppBuilder app)
 
 > Note: This nuget provides a simple controller (`Auth0AccountController`) to process the authentication response from Auth0. If you want to use your own controller, you need to set the `redirectPath` parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: `redirectPath: "/Account/ExternalLoginCallback"`.
 
-3- Include the <a href="https://github.com/auth0/auth0-widget.js" target="_new">Auth0 Widget</a>:
+3- Include the <a href="https://docs.auth0.com/login-widget2" target="_new">Auth0 Widget</a>:
 
 ~~~html
-<a href="javascript:showWidget();">Login</a>
+<a href="javascript:widget.signin();">Login</a>
 
 <script src="https://d19p4zemcycm7a.cloudfront.net/w2/auth0-widget-2.3.min.js"></script>
 <script type="text/javascript">
@@ -36,21 +36,10 @@ public void ConfigureAuth(IAppBuilder app)
 	    clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
 	    callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
 	});
-	
-	function showWidget() {
-		var xsrf = 'your_xsrf_random_string';
-		var returnUrl = window.location.pathname;
-		
-		widget.signin({
-			state: 'xsrf=' + xsrf + '&ru=' + returnUrl
-		});
-	}
 </script>
 ~~~
 
-## Auth0 Authentication Provider
-
-### Customizing the Claims Identity
+## Customizing the Claims Identity
 
 You can change/add new claims by attaching to `OnAuthenticated`:
 
@@ -74,7 +63,7 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 app.UseAuth0Authentication(provider: provider, clientId: ... );
 ~~~
 
-### Cross Site Request Forgery
+## Cross Site Request Forgery
 
 You can validate the xsrf value by attaching to `OnReturnEndpoint`:
 
@@ -99,4 +88,27 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 
 // specify the provider
 app.UseAuth0Authentication(provider: provider, clientId: ... );
+~~~
+
+And set same value when the widget is shown:
+
+~~~html
+<a href="javascript:showWidget();">Login</a>
+
+<script type="text/javascript">
+	var widget = new Auth0Widget({
+        domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
+        clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
+        callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
+    });
+
+    function showWidget() {
+        var xsrf = 'your_xsrf_random_string';
+        var returnUrl = window.location.pathname;
+
+        widget.signin({
+            state: 'xsrf=' + xsrf + '&ru=' + returnUrl
+        });
+    }
+</script>
 ~~~
