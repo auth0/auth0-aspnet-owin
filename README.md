@@ -2,47 +2,97 @@ Owin/Katana Authentication Handler for Auth0. Plug into the ASP.NET 4.5 Owin inf
 
 ## Installation
 
-	Install-Package Auth0-ASPNET-45 -Pre
-
-> Note: Katana is still in pre release, that's why this package won't be listed and can be installed only with `-Pre`
+	Install-Package Auth0-ASPNET-45
 
 ## Usage
 
-1. Create a new ASP.NET 4.5 Project
-2. Edit `Startup.Auth.cs`
+1- Create a new ASP.NET 4.5 Project.
+
+2- Edit `App_Start\Startup.Auth.cs`:
 
 ~~~c#
 public void ConfigureAuth(IAppBuilder app)
 {
-    // add google
-    app.AddAuth0Authentication(clientId: "...your_auth0_clientid...", clientSecret: "...your_auth0_clientsecret...", domain: "youraccount.auth0.com", connection: "google-oauth2", displayName: "Google");
+    // ...
     
-    // add linkedin
-    app.AddAuth0Authentication(clientId: "...your_auth0_clientid...", clientSecret: "...your_auth0_clientsecret...", domain: "youraccount.auth0.com", connection: "linkedin", displayName: "LinkedIn");
-
-
-    // add an enterprise connection like ADFS, SAML, Windows Azure AD, etc.
-    app.AddAuth0Authentication(clientId: "...your_auth0_clientid...", clientSecret: "...your_auth0_clientsecret...", domain: "youraccount.auth0.com", connection: "bigenterprise.com", displayName: "Big Enterprise");
+    app.UseAuth0Authentication(
+    	clientId:       System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"],
+    	clientSecret:   System.Configuration.ConfigurationManager.AppSettings["auth0:ClientSecret"],
+    	domain:         System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]);
 }
 ~~~
 
-The clientid, secrets and connection names can be found on Auth0 dashboard (http://app.auth0.com).
+> Note: This nuget provides a simple controller (`Auth0AccountController`) to process the authentication response from Auth0. If you want to use your own controller, you need to set the `redirectPath` parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: `redirectPath: "/Account/ExternalLoginCallback"`.
 
-## Customizing the Claims Identity
+3- Include the <a href="https://github.com/auth0/auth0-widget.js" target="_new">Auth0 Widget</a>:
 
-You can change/add new claims by attaching to OnAuthenticated
+~~~html
+<a href="javascript:showWidget();">Login</a>
+
+<script src="https://d19p4zemcycm7a.cloudfront.net/w2/auth0-widget-2.3.min.js"></script>
+<script type="text/javascript">
+	var widget = new Auth0Widget({
+	    domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
+	    clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
+	    callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
+	});
+	
+	function showWidget() {
+		var xsrf = 'your_xsrf_random_string';
+		var returnUrl = window.location.pathname;
+		
+		widget.signin({
+			state: 'xsrf=' + xsrf + '&ru=' + returnUrl
+		});
+	}
+</script>
+~~~
+
+## Auth0 Authentication Provider
+
+### Customizing the Claims Identity
+
+You can change/add new claims by attaching to `OnAuthenticated`:
 
 ~~~c#
-    var provider = new Microsoft.Owin.Security.Auth0.Auth0AuthenticationProvider
-    {
-        OnAuthenticated = async (context) =>
-        {
-            context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
-            context.Identity.AddClaim("something", context.User["another_prop"].ToString());
-            // context.User is a JObject with the original user object from Auth0
-        }
-    };
+var provider = new Auth0.Owin.Auth0AuthenticationProvider
+{
+	OnAuthenticated = async (context) =>
+	{
+		// context.User is a JObject with the original user object from Auth0
+		context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
+		context.Identity.AddClaim(
+			new System.Security.Claims.Claim(
+				"friendly_name",
+				string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+	}
+};
 
-    // specify the provider
-    app.AddAuth0Authentication(provider: provider, clientId: ... );
+// specify the provider
+app.UseAuth0Authentication(provider: provider, clientId: ... );
+~~~
+
+### Cross Site Request Forgery
+
+You can validate the xsrf value by attaching to `OnReturnEndpoint`:
+
+~~~c#
+var provider = new Auth0.Owin.Auth0AuthenticationProvider
+{
+	OnReturnEndpoint = async (context) =>
+	{
+		// xsrf validation
+		if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("xsrf="))
+		{
+			var state = HttpUtility.ParseQueryString(context.Request.Query["state"]);
+			if (state["xsrf"] != "your_xsrf_random_string")
+			{
+				throw new HttpException(400, "invalid xsrf");
+			}
+		}
+	}
+};
+
+// specify the provider
+app.UseAuth0Authentication(provider: provider, clientId: ... );
 ~~~
