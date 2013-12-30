@@ -6,6 +6,5 @@
 		<add key="auth0:ClientId" value="" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
 		<add key="auth0:ClientSecret" value="" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
 		<add key="auth0:Domain" value="" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
-		<add key="auth0:AppCallback" value="" xdt:Locator="Match(key)" xdt:Transform="InsertIfMissing" />
 	</appSettings>
 </configuration>
