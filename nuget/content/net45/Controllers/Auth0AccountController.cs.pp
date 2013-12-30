@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MvcSample.Controllers
+namespace $rootnamespace$.Controllers
 {
     public class Auth0AccountController : Controller
     {

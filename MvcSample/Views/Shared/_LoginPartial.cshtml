@@ -15,33 +15,17 @@
 }
 else
 {
-    <!-- Auth0 Login widget -->
     <ul class="nav navbar-nav navbar-right">
         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li><a href="javascript:showWidget();">Login</a></li>
+        <li><a href="javascript:widget.signin();">Login</a></li>
     </ul>
-
+    
     <script src="https://d19p4zemcycm7a.cloudfront.net/w2/auth0-widget-2.3.min.js"></script>
     <script type="text/javascript">
-        var widget = new Auth0Widget({
-            domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
-            clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-            callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
-        });
-
-        function showWidget() {
-            var xsrf = 'your_xsrf_random_string';
-            var returnUrl = window.location.pathname;
-
-            widget.signin({
-                //state: 'xsrf=' + xsrf + '&ru=' + returnUrl
-            });
-        }
+	    var widget = new Auth0Widget({
+	        domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
+	        clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
+	        callbackURL:  '@System.Configuration.ConfigurationManager.AppSettings["auth0:AppCallback"]'
+	    });
     </script>
-    
-    <!-- Auth0 Login page -->
-    @*<ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>*@
 }
