@@ -30,8 +30,11 @@ else
         });
 
         function showWidget() {
+            var xsrf = 'your_xsrf_random_string';
+            var returnUrl = window.location.pathname;
+
             widget.signin({
-                state: 'xsrf=0123456789&ru=/foo'
+                state: 'xsrf=' + xsrf + '&ru=' + returnUrl
             });
         }
     </script>

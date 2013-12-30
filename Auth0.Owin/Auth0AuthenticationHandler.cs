@@ -228,12 +228,20 @@ namespace Auth0.Owin
 
                 if (!context.IsRequestCompleted)
                 {
-                    string redirectUri = context.RedirectUri ?? Options.ExternalLoginCallback.ToString();
+                    string redirectUri = context.RedirectUri ?? Options.RedirectPath.ToString();
                     if (context.Identity == null)
                     {
                         // add a redirect hint that sign-in failed in some way
                         redirectUri = WebUtilities.AddQueryString(redirectUri, "error", "access_denied");
                     }
+
+                    if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("ru="))
+                    {
+                        // set returnUrl with state -> ru
+                        var state = HttpUtility.ParseQueryString(context.Request.Query["state"]);
+                        redirectUri = WebUtilities.AddQueryString(redirectUri, "returnUrl", state["ru"]);
+                    }
+
                     Response.Redirect(redirectUri);
                     context.RequestCompleted();
                 }
