@@ -15,7 +15,7 @@ namespace Owin
         /// <param name="app">The <see cref="IAppBuilder"/> passed to the configuration method</param>
         /// <param name="options">Middleware configuration options</param>
         /// <returns>The updated <see cref="IAppBuilder"/></returns>
-        public static IAppBuilder AddAuth0Authentication(this IAppBuilder app, Auth0AuthenticationOptions options)
+        public static IAppBuilder UseAuth0Authentication(this IAppBuilder app, Auth0AuthenticationOptions options)
         {
             if (app == null)
             {
@@ -44,19 +44,19 @@ namespace Owin
         /// <param name="scopes"></param>
         /// <param name="provider"></param>
         /// <returns>The updated <see cref="IAppBuilder"/></returns>
-        public static IAppBuilder AddAuth0Authentication(
+        public static IAppBuilder UseAuth0Authentication(
             this IAppBuilder app,
             string clientId,
             string clientSecret,
             string domain,
-            string redirectPath = "/Account/ExternalLoginCallback",
+            string redirectPath = "/Auth0Account/ExternalLoginCallback",
             string displayName = "Auth0",
             string connection = null,
             bool saveIdToken = true,
             string scopes = "openid",
             IAuth0AuthenticationProvider provider = null)
         {
-            return AddAuth0Authentication(
+            return UseAuth0Authentication(
                 app,
                 new Auth0AuthenticationOptions
                 {

@@ -63,7 +63,7 @@ namespace MvcSample
                 }
             };
 
-            app.AddAuth0Authentication(
+            app.UseAuth0Authentication(
                 clientId:       ConfigurationManager.AppSettings["auth0:ClientId"],
                 clientSecret:   ConfigurationManager.AppSettings["auth0:ClientSecret"],
                 domain:         ConfigurationManager.AppSettings["auth0:Domain"],
