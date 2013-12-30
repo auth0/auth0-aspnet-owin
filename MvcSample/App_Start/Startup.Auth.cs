@@ -3,7 +3,6 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Configuration;
-using System.Web;
 
 namespace MvcSample
 {
@@ -48,20 +47,6 @@ namespace MvcSample
                         new System.Security.Claims.Claim(
                             "friendly_name",
                             string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
-
-                    return System.Threading.Tasks.Task.FromResult(0);
-                },
-                OnReturnEndpoint = (context) =>
-                {
-                    // xsrf validation
-                    if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("xsrf="))
-                    {
-                        var state = HttpUtility.ParseQueryString(context.Request.Query["state"]);
-                        if (state["xsrf"] != "your_xsrf_random_string")
-                        {
-                            throw new HttpException(400, "invalid xsrf");
-                        }
-                    }
 
                     return System.Threading.Tasks.Task.FromResult(0);
                 }
