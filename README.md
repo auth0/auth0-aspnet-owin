@@ -10,6 +10,8 @@ Owin/Katana Authentication Handler for Auth0. Plug into the ASP.NET 4.5 Owin inf
 
 2- Go to web.config and set `auth0:ClientId`, `auth0:ClientSecret`, `auth0:Domain` and `auth0:AppCallback` from appSettings.
 
+> Note: These settings can be found on <a href="http://app.auth0.com" target="_new">Auth0 dashboard</a>.
+
 3- Edit `App_Start\Startup.Auth.cs`:
 
 ~~~c#
