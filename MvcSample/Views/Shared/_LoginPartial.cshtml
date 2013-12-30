@@ -25,7 +25,7 @@ else
     var widget = new Auth0Widget({
         domain: '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
         clientID: '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-        callbackURL: 'http://localhost:PORT/signin-auth0'
+        callbackURL: window.location.origin + '/signin-auth0'
     });
     </script>
 }
