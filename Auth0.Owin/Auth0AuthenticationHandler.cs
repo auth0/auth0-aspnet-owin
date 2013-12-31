@@ -51,18 +51,6 @@ namespace Auth0.Owin
                     state = values[0];
                 }
 
-                //properties = Options.StateDataFormat.Unprotect(state);
-                //if (properties == null)
-                //{
-                //    return null;
-                //}
-
-                // OAuth2 10.12 CSRF
-                //if (!ValidateCorrelationId(properties, _logger))
-                //{
-                //    return new AuthenticationTicket(null, properties);
-                //}
-
                 var tokenRequestParameters = string.Format(
                     CultureInfo.InvariantCulture,
                     "client_id={0}&redirect_uri={1}&client_secret={2}&code={3}&grant_type=authorization_code",
@@ -163,9 +151,6 @@ namespace Auth0.Owin
                 {
                     properties.RedirectUri = currentUri;
                 }
-
-                // OAuth2 10.12 CSRF
-                //GenerateCorrelationId(properties);
 
                 // comma separated
                 string scope = string.Join(",", Options.Scope);
