@@ -2,7 +2,7 @@ Owin/Katana Authentication Handler for Auth0. Plug into the ASP.NET 4.5 Owin inf
 
 ## Installation
 
-	Install-Package Auth0-ASPNET-45
+	Install-Package Auth0-ASPNET-Owin
 
 ## Usage
 
