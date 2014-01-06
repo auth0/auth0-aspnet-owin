@@ -26,7 +26,7 @@ public void ConfigureAuth(IAppBuilder app)
 }
 ~~~
 
-> Note: This nuget provides a simple controller (`Auth0AccountController`) to process the authentication response from Auth0. If you want to use your own controller, you need to set the `redirectPath` parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: `redirectPath: "/Account/ExternalLoginCallback"`.
+> Note: The nuget provides a simple controller (_Auth0AccountController_) to process the authentication response from Auth0. If you want to use your own controller, make sure you set the `redirectPath` parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: `redirectPath: "/Account/ExternalLoginCallback"`.
 
 4- Include the <a href="https://docs.auth0.com/login-widget2" target="_new">Auth0 Widget</a>:
 
