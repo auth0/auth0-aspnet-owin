@@ -12,11 +12,21 @@ Owin/Katana Authentication Handler for Auth0. Plug into the ASP.NET 4.5 Owin inf
 
 > Note: These settings can be found on <a href="http://app.auth0.com" target="_new">Auth0 dashboard</a>.
 
-3- Edit `App_Start\Startup.Auth.cs`:
+3- Edit `App_Start\Startup.Auth.cs` in order to call the `UseAuth0Authentication` extension method:
 
 ~~~c#
 public void ConfigureAuth(IAppBuilder app)
 {
+	// Enable the application to use a cookie to store information for the signed in user
+    app.UseCookieAuthentication(new CookieAuthenticationOptions
+    {
+        AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+        LoginPath = new PathString("/Account/Login")
+    });
+    
+    // Use a cookie to temporarily store information about a user logging in with a third party login provider
+    app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+
     // ...
     
     app.UseAuth0Authentication(
