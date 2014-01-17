@@ -9,9 +9,37 @@
         <li>
             @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
+        <li><a href="#" id="get-customers">Get Customers</a></li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>
     }
+    
+    <script src="~/Scripts/jquery-1.10.2.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#get-customers').on('click', function () {
+                $.ajax({
+                    url: '/api/customers',
+                    dataType: 'json',
+                    beforeSend: function (request) {
+                        var id_token = '123';
+                        request.setRequestHeader("Authorization", "Bearer " + id_token);
+                    },
+                    success: function (data, status, jqHXR) {
+                        alert(JSON.stringify(data));
+                    },
+                    error: function (resp) {
+                        if (resp.status === 401) {
+                            alert('Unauthorized');
+                        } else {
+                            alert('Error');
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>
 }
 else
 {
