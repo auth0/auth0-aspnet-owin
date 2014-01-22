@@ -1,5 +1,6 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -27,8 +28,9 @@ namespace $rootnamespace$.Controllers
             var externalIdentity = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
             if (externalIdentity == null)
             {
-                throw new Exception("Could not get the external identity. Please check your Auth0 configuration settings.");
+                throw new Exception("Could not get the external identity. Please check your Auth0 configuration settings and ensure that you configured UseCookieAuthentication and UseExternalSignInCookie from OWIN Startup class.");
             }
+
             AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, CreateIdentity(externalIdentity));
             return RedirectToLocal(returnUrl);
         }
@@ -38,11 +40,12 @@ namespace $rootnamespace$.Controllers
             var identity = new ClaimsIdentity(externalIdentity.Claims, DefaultAuthenticationTypes.ApplicationCookie);
 
             // This claim is required for the ASP.NET Anti-Forgery Token to function.
-            // See http://msdn.microsoft.com/en-us/library/system.web.helpers.antiforgeryconfig.uniqueclaimtypeidentifier(v=vs.111).aspx.
-            identity.AddClaim(new Claim(
-                "http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", 
-                "ASP.NET Identity", 
-                "http://www.w3.org/2001/XMLSchema#string"));
+            // See http://msdn.microsoft.com/en-us/library/system.web.helpers.antiforgeryconfig.uniqueclaimtypeidentifier(v=vs.111).aspx
+            identity.AddClaim(
+                new Claim(
+                    "http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", 
+                    "ASP.NET Identity", 
+                    "http://www.w3.org/2001/XMLSchema#string"));
 
             return identity;
         }

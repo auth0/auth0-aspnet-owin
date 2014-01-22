@@ -41,7 +41,7 @@
   <ItemGroup>
     <Reference Include="Auth0.Owin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Auth0-ASPNET-Owin.0.4.1\lib\net45\Auth0.Owin.dll</HintPath>
+      <HintPath>..\packages\Auth0-ASPNET-Owin.0.4.3\lib\net45\Auth0.Owin.dll</HintPath>
     </Reference>
     <Reference Include="JWT">
       <HintPath>..\packages\JWT.1.3.2\lib\3.5\JWT.dll</HintPath>

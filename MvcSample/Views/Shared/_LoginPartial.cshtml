@@ -53,6 +53,7 @@ else
         if (!window.location.origin) {
             window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
         }
+
         var widget = new Auth0Widget({
             domain: '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
             clientID: '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
