@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,8 +13,8 @@ namespace MvcSample.Controllers
         [Authorize]
         public IEnumerable<string> Get()
         {
-            // you could access here the user_id by doing 
-            // ClaimsPrincipal.Current.Claims.SingleOrDefault(c => c.Type == "sub").Value
+            // you could access here the user profile by doing:
+            // System.Security.Claims.ClaimsPrincipal.Current.FindFirst("email").Value
 
             return new string[] { "John Doe", "Nancy Davolo" };
         }
