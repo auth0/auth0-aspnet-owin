@@ -23,16 +23,28 @@ namespace MvcSample.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            this.AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            AuthenticationManager.SignOut();
 
             var externalIdentity = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
             if (externalIdentity == null)
             {
-                throw new Exception("Could not get the external identity. Please check your Auth0 configuration settings and ensure that you configured UseCookieAuthentication and UseExternalSignInCookie from OWIN Startup class.");
+                throw new Exception("Could not get the external identity. Please check your Auth0 configuration settings and ensure that " +
+                                    "you configured UseCookieAuthentication and UseExternalSignInCookie in the OWIN Startup class. " +
+                                    "Also make sure you are not calling setting the callbackOnLocationHash option on the JavaScript widget.");
             }
 
             AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, CreateIdentity(externalIdentity));
             return RedirectToLocal(returnUrl);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult> Logout()
+        {
+            AuthenticationManager.SignOut();
+            //You can comment out the next line if you're not saving the ID_Token in a client-side cookie.
+            Response.Cookies.Clear();
+            return RedirectToLocal("/");
         }
 
         private static ClaimsIdentity CreateIdentity(ClaimsIdentity externalIdentity)

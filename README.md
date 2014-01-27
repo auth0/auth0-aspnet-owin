@@ -61,15 +61,20 @@ You can change/add new claims by attaching to `OnAuthenticated`:
 var provider = new Auth0.Owin.Auth0AuthenticationProvider
 {
 	OnAuthenticated = (context) =>
-	{
-		// context.User is a JObject with the original user object from Auth0
-		context.Identity.AddClaim(new System.Security.Claims.Claim("foo", "bar"));
-		context.Identity.AddClaim(
-			new System.Security.Claims.Claim(
-				"friendly_name",
-				string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
-		
-		return System.Threading.Tasks.Task.FromResult(0);
+        {
+            // Comment out the next two lines if you will not be calling any services from client-side JavaScript.
+            context.Response.Cookies.Append("profile", context.Email);
+            context.Response.Cookies.Append("id_token", context.IdToken);
+
+            // These are examples of adding additional claims. Comment them out if you're not going to use them.
+            // context.User is a JObject with the original user object from Auth0
+            context.Identity.AddClaim(new Claim("foo", "bar"));
+            context.Identity.AddClaim(
+                new Claim(
+                    "friendly_name",
+                    string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+	
+            return System.Threading.Tasks.Task.FromResult(0);
 	}
 };
 
