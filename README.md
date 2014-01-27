@@ -22,6 +22,8 @@ public void ConfigureAuth(IAppBuilder app)
     {
         AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
         LoginPath = new PathString("/Account/Login")
+		// LoginPath property informs the middleware that it should change an outgoing 401 Unauthorized status code into a 302 redirection onto the given login path
+		// More info: http://msdn.microsoft.com/en-us/library/microsoft.owin.security.cookies.cookieauthenticationoptions.loginpath(v=vs.111).aspx
     });
     
     // Use a cookie to temporarily store information about a user logging in with a third party login provider
@@ -53,6 +55,18 @@ public void ConfigureAuth(IAppBuilder app)
 </script>
 ~~~
 
+> Note: Once user is authenticated, you can access his profile by doing:
+
+~~~js
+@if (Request.IsAuthenticated)
+{
+	var id_token = "@ClaimsPrincipal.Current.FindFirst("id_token").Value";
+	var email = "@ClaimsPrincipal.Current.FindFirst("email").Value";
+	
+	// ...
+}
+~~~
+
 ## Customizing the Claims Identity
 
 You can change/add new claims by attaching to `OnAuthenticated`:
@@ -62,10 +76,6 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 {
 	OnAuthenticated = (context) =>
         {
-            // Comment out the next two lines if you will not be calling any services from client-side JavaScript.
-            context.Response.Cookies.Append("profile", context.Email);
-            context.Response.Cookies.Append("id_token", context.IdToken);
-
             // These are examples of adding additional claims. Comment them out if you're not going to use them.
             // context.User is a JObject with the original user object from Auth0
             context.Identity.AddClaim(new Claim("foo", "bar"));

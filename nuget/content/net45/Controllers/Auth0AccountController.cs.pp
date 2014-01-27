@@ -39,12 +39,10 @@ namespace $rootnamespace$.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult> Logout()
+        public async Task<ActionResult> Logout(string returnUrl)
         {
             AuthenticationManager.SignOut();
-            //You can comment out the next line if you're not saving the ID_Token in a client-side cookie.
-            Response.Cookies.Clear();
-            return RedirectToLocal("/");
+            return RedirectToLocal(returnUrl);
         }
 
         private static ClaimsIdentity CreateIdentity(ClaimsIdentity externalIdentity)
@@ -64,7 +62,7 @@ namespace $rootnamespace$.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            return Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : Redirect("/");
+            return Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToAction("Index", "Home");
         }
     }
 }
