@@ -37,14 +37,14 @@ namespace $rootnamespace$.Controllers
             return RedirectToLocal(returnUrl);
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<ActionResult> Logout(string returnUrl)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff(string returnUrl)
         {
             AuthenticationManager.SignOut();
             return RedirectToLocal(returnUrl);
         }
-
+		
         private static ClaimsIdentity CreateIdentity(ClaimsIdentity externalIdentity)
         {
             var identity = new ClaimsIdentity(externalIdentity.Claims, DefaultAuthenticationTypes.ApplicationCookie);
@@ -62,7 +62,14 @@ namespace $rootnamespace$.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            return Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToAction("Index", "Home");
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }
