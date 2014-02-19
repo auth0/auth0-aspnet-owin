@@ -141,3 +141,9 @@ And set same value when the widget is shown:
     }
 </script>
 ~~~
+
+Contributors
+=============
+
+* Robert McLaws ([@robertmclaws](https://twitter.com/robertmclaws) - AdvancedRei) 
+
