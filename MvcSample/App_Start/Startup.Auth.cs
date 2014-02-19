@@ -30,10 +30,6 @@ namespace MvcSample
             {
                 OnAuthenticated = (context) =>
                 {
-                    // Comment out the next two lines if you will not be calling any services from client-side JavaScript.
-                    context.Response.Cookies.Append("profile", context.Email);
-                    context.Response.Cookies.Append("id_token", context.IdToken);
-
                     // context.User is a JObject with the original user object from Auth0
                     context.Identity.AddClaim(new Claim("foo", "bar"));
                     context.Identity.AddClaim(
