@@ -58,16 +58,26 @@ You can change/add new claims by attaching to "OnAuthenticated":
 var provider = new Auth0.Owin.Auth0AuthenticationProvider
 {
 	OnAuthenticated = (context) =>
-        {
-            // These are examples of adding additional claims. Comment them out if you're not going to use them.
-            // context.User is a JObject with the original user object from Auth0
-            context.Identity.AddClaim(new Claim("foo", "bar"));
-            context.Identity.AddClaim(
-                new Claim(
-                    "friendly_name",
-                    string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+	{
+		// These are examples of adding additional claims. Comment them out if you're not going to use them.
+		// context.User is a JObject with the original user object from Auth0
+		if (context.User["admin"] != null)
+		{
+			context.Identity.AddClaim(new Claim("admin", context.User.Value<string>("admin")));
+		}
+		
+		context.Identity.AddClaim(
+			new Claim(
+				"friendly_name",
+				string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
 
-            return System.Threading.Tasks.Task.FromResult(0);
+		// NOTE: uncomment this if you send an array of roles (i.e.: ['sales','marketing','hr'])
+		//context.User["roles"].ToList().ForEach(r =>
+		//{
+		//    context.Identity.AddClaim(new Claim(ClaimTypes.Role, r.ToString()));
+		//});
+
+		return System.Threading.Tasks.Task.FromResult(0);
 	}
 };
 
