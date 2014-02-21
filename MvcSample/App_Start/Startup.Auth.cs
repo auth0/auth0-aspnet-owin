@@ -3,6 +3,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Configuration;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -31,11 +32,21 @@ namespace MvcSample
                 OnAuthenticated = (context) =>
                 {
                     // context.User is a JObject with the original user object from Auth0
-                    context.Identity.AddClaim(new Claim("foo", "bar"));
+                    if (context.User["admin"] != null)
+                    {
+                        context.Identity.AddClaim(new Claim("admin", context.User.Value<string>("admin")));
+                    }
+                    
                     context.Identity.AddClaim(
                         new Claim(
                             "friendly_name",
                             string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+
+                    // NOTE: uncomment this if you send an array of roles (i.e.: ['sales','marketing','hr'])
+                    //context.User["roles"].ToList().ForEach(r =>
+                    //{
+                    //    context.Identity.AddClaim(new Claim(ClaimTypes.Role, r.ToString()));
+                    //});
 
                     return Task.FromResult(0);
                 }
