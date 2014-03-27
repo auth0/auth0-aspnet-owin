@@ -1,6 +1,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System;
+using System.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -42,7 +43,16 @@ namespace MvcSample.Controllers
         public ActionResult LogOff(string returnUrl)
         {
             AuthenticationManager.SignOut();
-            return RedirectToLocal(returnUrl);
+
+            var absoluteReturnUrl = string.IsNullOrEmpty(returnUrl) ?
+                this.Url.Action("Index", "Home", new { }, this.Request.Url.Scheme) :
+                this.Url.IsLocalUrl(returnUrl) ?
+                    new Uri(this.Request.Url, returnUrl).AbsoluteUri : returnUrl;
+
+            return Redirect(
+                string.Format("https://{0}/logout?returnTo={1}",
+                    ConfigurationManager.AppSettings["auth0:Domain"],
+                    absoluteReturnUrl));
         }
 		
         private static ClaimsIdentity CreateIdentity(ClaimsIdentity externalIdentity)
