@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System.Linq;
+using Microsoft.Owin;
 using Microsoft.Owin.Helpers;
 using Microsoft.Owin.Infrastructure;
 using Microsoft.Owin.Logging;
@@ -184,7 +185,12 @@ namespace Auth0.Owin
         {
             if (Options.CallbackPath.HasValue && Options.CallbackPath == Request.Path)
             {
-                // TODO: error responses
+                if (Request.Query["error"] != null)
+                {
+                    var redirectUrl = Options.RedirectPath + Request.QueryString;
+                    Response.Redirect(redirectUrl);
+                    return true;
+                }
 
                 AuthenticationTicket ticket = await AuthenticateAsync();
                 if (ticket == null)
@@ -200,8 +206,7 @@ namespace Auth0.Owin
 
                 await Options.Provider.ReturnEndpoint(context);
 
-                if (context.SignInAsAuthenticationType != null &&
-                    context.Identity != null)
+                if (context.SignInAsAuthenticationType != null && context.Identity != null)
                 {
                     ClaimsIdentity grantIdentity = context.Identity;
                     if (!string.Equals(grantIdentity.AuthenticationType, context.SignInAsAuthenticationType, StringComparison.Ordinal))
