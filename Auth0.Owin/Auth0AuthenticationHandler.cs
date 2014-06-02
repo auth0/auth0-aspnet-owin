@@ -187,6 +187,8 @@ namespace Auth0.Owin
             {
                 if (Request.Query["error"] != null)
                 {
+                    _logger.WriteVerbose("Remote server returned an error: " + Request.QueryString);
+
                     var redirectUrl = Options.RedirectPath + Request.QueryString;
                     Response.Redirect(redirectUrl);
                     return true;
