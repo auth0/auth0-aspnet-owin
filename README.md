@@ -145,5 +145,5 @@ And set same value when the widget is shown:
 Contributors
 =============
 
-* Robert McLaws ([@robertmclaws](https://twitter.com/robertmclaws) - AdvancedRei) 
+* Robert McLaws ([@robertmclaws](https://twitter.com/robertmclaws) - AdvancedREI) 
 
