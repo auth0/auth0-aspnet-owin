@@ -61,7 +61,7 @@ public void ConfigureAuth(IAppBuilder app)
 @if (Request.IsAuthenticated)
 {
 	var id_token = "@ClaimsPrincipal.Current.FindFirst("id_token").Value";
-	var email = "@ClaimsPrincipal.Current.FindFirst("email").Value";
+	var email = "@ClaimsPrincipal.Current.FindFirst(ClaimTypes.Email).Value";
 	
 	// ...
 }
