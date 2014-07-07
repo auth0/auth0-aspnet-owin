@@ -88,7 +88,7 @@ namespace Auth0.Owin
                     {
                         new Claim(ClaimTypes.NameIdentifier, context.Id, "http://www.w3.org/2001/XMLSchema#string", context.Connection),
                         new Claim(ClaimTypes.Name, context.Name, "http://www.w3.org/2001/XMLSchema#string", context.Connection),
-                        new Claim("user_id", context.Id, "http://www.w3.org/2001/XMLSchema#string", context.Connection),
+                        new Claim("user_id", context.Id, "http://www.w3.org/2001/XMLSchema#string", Constants.Auth0Issuer),
                     },
                     Options.AuthenticationType,
                     ClaimsIdentity.DefaultNameClaimType,
@@ -106,7 +106,9 @@ namespace Auth0.Owin
                 if (!string.IsNullOrWhiteSpace(context.Picture)) context.Identity.AddClaim(new Claim("picture", context.Picture, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
                 if (!string.IsNullOrWhiteSpace(context.Provider)) context.Identity.AddClaim(new Claim("provider", context.Provider, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
                 if (!string.IsNullOrWhiteSpace(context.ProviderAccessToken)) context.Identity.AddClaim(new Claim("provider_access_token", context.ProviderAccessToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
-                if (Options.SaveIdToken && !string.IsNullOrWhiteSpace(context.IdToken)) context.Identity.AddClaim(new Claim("id_token", context.IdToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
+
+                if (Options.SaveIdToken && !string.IsNullOrWhiteSpace(context.IdToken)) context.Identity.AddClaim(new Claim("id_token", context.IdToken, "http://www.w3.org/2001/XMLSchema#string", Constants.Auth0Issuer));
+                context.Identity.AddClaim(new Claim("access_token", context.AccessToken, "http://www.w3.org/2001/XMLSchema#string", Constants.Auth0Issuer));
 
                 context.Properties = properties ?? new AuthenticationProperties();
 
