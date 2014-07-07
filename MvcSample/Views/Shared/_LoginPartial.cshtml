@@ -22,7 +22,7 @@
                     url: '/api/customers',
                     dataType: 'json',
                     beforeSend: function (request) {
-                        var id_token = '@System.Security.Claims.ClaimsPrincipal.Current.Claims.SingleOrDefault(c => c.Type == "id_token").Value';
+                        var id_token = '@System.Security.Claims.ClaimsPrincipal.Current.FindFirst("id_token").Value';
                         request.setRequestHeader("Authorization", "Bearer " + id_token);
                     },
                     success: function (data, status, jqHXR) {
