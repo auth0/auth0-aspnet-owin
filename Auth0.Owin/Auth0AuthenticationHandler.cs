@@ -52,6 +52,14 @@ namespace Auth0.Owin
                     state = values[0];
                 }
 
+                properties = Options.StateDataFormat.Unprotect(state);
+
+                if (code == null)
+                {
+                    // Null if the remote server returns an error.
+                    return new AuthenticationTicket(null, properties);
+                }
+
                 var tokenRequestParameters = string.Format(
                     CultureInfo.InvariantCulture,
                     "client_id={0}&redirect_uri={1}&client_secret={2}&code={3}&grant_type=authorization_code",

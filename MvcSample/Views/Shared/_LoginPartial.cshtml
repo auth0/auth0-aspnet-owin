@@ -45,10 +45,10 @@ else
 {
     <ul class="nav navbar-nav navbar-right">
         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li><a href="javascript:void(0);" onclick="widget.signin();">Login</a></li>
+        <li><a href="javascript:showWidget();">Login</a></li>
     </ul>
     
-    <script src="https://cdn.auth0.com/w2/auth0-widget-3.0.min.js"></script>
+    <script src="https://cdn.auth0.com/w2/auth0-widget-5.0.min.js"></script>
     <script type="text/javascript">
         if (!window.location.origin) {
             window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
@@ -59,5 +59,17 @@ else
             clientID: '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
             callbackURL: window.location.origin + '/signin-auth0'
         });
+
+        function showWidget() {
+            // optional: set xsrf and returnUrl
+            /* var xsrf = 'your_xsrf_random_string';
+            var returnUrl = window.location.pathname;
+
+            widget.signin({
+                state: 'xsrf=' + xsrf + '&ru=' + returnUrl
+            });*/
+
+            widget.signin();
+        }
     </script>
 }

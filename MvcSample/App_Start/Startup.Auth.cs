@@ -3,9 +3,9 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System.Configuration;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace MvcSample
 {
@@ -29,6 +29,20 @@ namespace MvcSample
             // Use Auth0
             var provider = new Auth0.Owin.Auth0AuthenticationProvider
             {
+                OnReturnEndpoint = (context) =>
+                {
+                    // xsrf validation
+                    if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("xsrf="))
+                    {
+                        var state = HttpUtility.ParseQueryString(context.Request.Query["state"]);
+                        if (state["xsrf"] != "your_xsrf_random_string")
+                        {
+                            throw new HttpException(400, "invalid xsrf");
+                        }
+                    }
+
+                    return System.Threading.Tasks.Task.FromResult(0);
+                },
                 OnAuthenticated = (context) =>
                 {
                     // context.User is a JObject with the original user object from Auth0
