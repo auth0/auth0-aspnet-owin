@@ -76,15 +76,15 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 {
 	OnAuthenticated = (context) =>
 	{
-            // These are examples of adding additional claims. Comment them out if you're not going to use them.
-            // context.User is a JObject with the original user object from Auth0
-            context.Identity.AddClaim(new Claim("foo", "bar"));
-            context.Identity.AddClaim(
-                new Claim(
-                    "friendly_name",
-                    string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
-	
-            return System.Threading.Tasks.Task.FromResult(0);
+	// These are examples of adding additional claims. Comment them out if you're not going to use them.
+		// context.User is a JObject with the original user object from Auth0
+		context.Identity.AddClaim(new Claim("foo", "bar"));
+		context.Identity.AddClaim(
+		new Claim(
+			"friendly_name",
+			string.Format("{0}, {1}", context.User["family_name"], context.User["given_name"])));
+		
+		return System.Threading.Tasks.Task.FromResult(0);
 	}
 };
 
