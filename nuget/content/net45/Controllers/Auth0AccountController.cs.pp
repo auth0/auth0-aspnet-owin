@@ -2,6 +2,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -42,7 +43,8 @@ namespace $rootnamespace$.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff(string returnUrl)
         {
-            AuthenticationManager.SignOut();
+            var appTypes = AuthenticationManager.GetAuthenticationTypes().Select(at => at.AuthenticationType).ToArray();
+            AuthenticationManager.SignOut(appTypes);
 
             var absoluteReturnUrl = string.IsNullOrEmpty(returnUrl) ?
                 this.Url.Action("Index", "Home", new { }, this.Request.Url.Scheme) :
