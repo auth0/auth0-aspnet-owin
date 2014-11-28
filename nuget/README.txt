@@ -1,6 +1,6 @@
 1- Go to Web.config and set "auth0:ClientId", "auth0:ClientSecret" and "auth0:Domain" from appSettings.
 
-    Note: These settings can be found on Auth0 dashboard (https://app.auth0.com/).
+    Note: These settings can be found in the Auth0 dashboard (https://app.auth0.com/).
 
 2- Edit App_Start\Startup.Auth.cs in order to call the UseAuth0Authentication extension method:
 
@@ -14,12 +14,12 @@ public void ConfigureAuth(IAppBuilder app)
 		// LoginPath property informs the middleware that it should change an outgoing 401 Unauthorized status code into a 302 redirection onto the given login path
 		// More info: http://msdn.microsoft.com/en-us/library/microsoft.owin.security.cookies.cookieauthenticationoptions.loginpath(v=vs.111).aspx
     });
-    
+
     // Use a cookie to temporarily store information about a user logging in with a third party login provider
     app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
     // ...
-    
+
     app.UseAuth0Authentication(
     	clientId:       System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"],
     	clientSecret:   System.Configuration.ConfigurationManager.AppSettings["auth0:ClientSecret"],
@@ -28,16 +28,15 @@ public void ConfigureAuth(IAppBuilder app)
 
 > Note: This nuget provides a simple controller (Auth0AccountController) to process the authentication response from Auth0. If you want to use your own controller, you need to set the "redirectPath" parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: redirectPath: "/Account/ExternalLoginCallback".
 
-3- Include the Auth0 Widget:
+3- Include the Auth0 Lock:
 
-<a href="javascript:widget.signin();">Login</a>
+<a href="javascript:lock.signin();">Login</a>
 
-<script src="//cdn.auth0.com/w2/auth0-widget-5.2.min.js"></script>
+<script src="http://cdn.auth0.com/js/lock-6.6.js"></script>
 <script type="text/javascript">
-	var widget = new Auth0Widget({
-	    domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
-	    clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-	    callbackURL:  'http://localhost:PORT/signin-auth0'
+	var lock = new Auth0Lock({
+        '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]'
+        '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]'
 	});
 </script>
 
@@ -47,7 +46,7 @@ public void ConfigureAuth(IAppBuilder app)
 {
 	var id_token = "@ClaimsPrincipal.Current.FindFirst("id_token").Value";
 	var email = "@ClaimsPrincipal.Current.FindFirst("email").Value";
-	
+
 	// ...
 }
 
@@ -65,7 +64,7 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 		{
 			context.Identity.AddClaim(new Claim("admin", context.User.Value<string>("admin")));
 		}
-		
+
 		context.Identity.AddClaim(
 			new Claim(
 				"friendly_name",
@@ -101,7 +100,7 @@ var provider = new Auth0.Owin.Auth0AuthenticationProvider
 				throw new HttpException(400, "invalid xsrf");
 			}
 		}
-		
+
 		return System.Threading.Tasks.Task.FromResult(0);
 	}
 };
@@ -114,17 +113,16 @@ And set same value when the widget is shown:
 <a href="javascript:showWidget();">Login</a>
 
 <script type="text/javascript">
-	var widget = new Auth0Widget({
-        domain:       '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
-        clientID:     '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-        callbackURL:  'http://localhost:PORT/signin-auth0'
-    });
+    var lock = new Auth0Lock(
+        '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]'
+        '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]'
+    );
 
     function showWidget() {
         var xsrf = 'your_xsrf_random_string';
         var returnUrl = window.location.pathname;
 
-        widget.signin({
+        lock.showSignin({
             state: 'xsrf=' + xsrf + '&ru=' + returnUrl
         });
     }
