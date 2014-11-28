@@ -40,12 +40,12 @@ Owin/Katana Authentication Handler for Auth0. Plugs into the ASP.NET 4.5 Owin in
 
 	> Note: The nuget provides a simple controller (_Auth0AccountController_) to process the authentication response from Auth0. If you want to use your own controller, make sure you set the `redirectPath` parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: `redirectPath: "/Account/ExternalLoginCallback"`.
 
-4. Include the <a href="https://docs.auth0.com/login-widget2" target="_new">Auth0 Widget</a>:
+4. Include the <a href="https://docs.auth0.com/login-widget2" target="_new">Auth0 Lock</a>:
 
 	~~~html
-	<a href="javascript:widget.signin();">Login</a>
+	<a href="javascript:lock.showSignin();">Login</a>
 
-	<script src="https://d19p4zemcycm7a.cloudfront.net/w2/auth0-widget-2.3.min.js"></script>
+	<script src="http://cdn.auth0.com/js/lock-6.6.js"></script>
 	<script type="text/javascript">
 		var lock = new Auth0Lock(
 			'@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]'
