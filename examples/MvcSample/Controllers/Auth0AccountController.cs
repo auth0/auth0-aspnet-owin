@@ -23,9 +23,14 @@ namespace MvcSample.Controllers
         //
         // GET: /Auth0Account/ExternalLoginCallback
         [AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        public async Task<ActionResult> ExternalLoginCallback(string returnUrl, string error)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+
+            if (error == "access_denied")
+            {
+                return View("AccessDenied");
+            }
 
             var externalIdentity = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
             if (externalIdentity == null)
