@@ -48,28 +48,27 @@ else
         <li><a href="javascript:showWidget();">Login</a></li>
     </ul>
     
-    <script src="https://cdn.auth0.com/w2/auth0-widget-5.0.min.js"></script>
+    <script src="https://cdn.auth0.com/js/lock-7.min.js"></script>
     <script type="text/javascript">
         if (!window.location.origin) {
             window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
         }
-
-        var widget = new Auth0Widget({
-            domain: '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]',
-            clientID: '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
-            callbackURL: window.location.origin + '/signin-auth0'
-        });
+        
+        var lock = new Auth0Lock(
+            '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
+            '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]');
 
         function showWidget() {
             // optional: set xsrf and returnUrl
             /* var xsrf = 'your_xsrf_random_string';
-            var returnUrl = window.location.pathname;
-
-            widget.signin({
-                state: 'xsrf=' + xsrf + '&ru=' + returnUrl
-            });*/
-
-            widget.signin();
+            var returnUrl = window.location.pathname;*/
+            
+            lock.show({
+                callbackURL: 'window.location.origin + '/signin-auth0',
+                /*authParams: {
+                  state: 'xsrf=' + xsrf + '&ru=' + returnUrl
+                }*/
+            });
         }
     </script>
 }
