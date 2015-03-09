@@ -1,7 +1,7 @@
 {
 	"Auth0": {
-		"ClientId":  "{YOUR_AUTH0_CLIENT_ID}",
-		"Domain": "https://{YOU}.auth0.com",
-		"PostLogoutRedirectUri":  "{YOUR_AUTH0_CALLBACK_URL}"
+		"ClientId": "{CLIENT_ID}",
+		"Domain": "{DOMAIN}",
+		"PostLogoutRedirectUri":  "http://localhost:49848/"
 	}
 }
