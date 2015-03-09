@@ -1,0 +1,6 @@
+﻿{
+	"Auth0": {
+		"ClientId": "{CLIENT_ID}",
+		"Domain": "{DOMAIN}"
+	}
+}
