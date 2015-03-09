@@ -23,4 +23,4 @@ Currently, the OAuth Bearer middleware is not supporting JWT tokens signed with 
 
 1. Go to https://manage.auth0.com/#/applications/{YOUR_AUTH0_CLIENT_ID}/settings
 2. Click on `Show Advanced Settings` button.
-3. Set 1RS256` as `JsonWebToken Token Signature Algorithm` and click on `Save`.
+3. Set `RS256` as `JsonWebToken Token Signature Algorithm` and click on `Save`.
