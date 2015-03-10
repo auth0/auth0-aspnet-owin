@@ -13,19 +13,19 @@ using Microsoft.Framework.OptionsModel;
 
 namespace AspNet5.WebApp.OpenIdConnect.Controllers
 {
-	public class AccountController : Controller
-	{
-	    // GET: /Account/Login
-		[HttpGet]
-		public IActionResult Login(string returnUrl = null)
-		{
-			if (Context.User == null || !Context.User.Identity.IsAuthenticated)
-			{
-				return new ChallengeResult(OpenIdConnectAuthenticationDefaults.AuthenticationType, new AuthenticationProperties { RedirectUri = "/" });
-			}
+    public class AccountController : Controller
+    {
+        // GET: /Account/Login
+        [HttpGet]
+        public IActionResult Login(string returnUrl = null)
+        {
+            if (Context.User == null || !Context.User.Identity.IsAuthenticated)
+            {
+                return new ChallengeResult(OpenIdConnectAuthenticationDefaults.AuthenticationType, new AuthenticationProperties { RedirectUri = "/" });
+            }
 
-			return RedirectToAction("Index", "Home");
-		}
+            return RedirectToAction("Index", "Home");
+        }
 
         /// <summary>
         /// When authenticating using the OpenID Connect middleware the nonce is required by default (but this can be turned off) 
@@ -36,51 +36,51 @@ namespace AspNet5.WebApp.OpenIdConnect.Controllers
         /// </summary>
         /// <returns></returns>
 	    [HttpPost]
-	    public IActionResult Prepare()
-	    {
+        public IActionResult Prepare()
+        {
             var middlewareOptions = Context.ApplicationServices.GetService<IOptions<OpenIdConnectAuthenticationOptions>>();
-            
+
             // Generate the nonce.
             var nonce = middlewareOptions.Options.ProtocolValidator.GenerateNonce();
 
             // Store it in the cache or in a cookie.
-	        if (middlewareOptions.Options.NonceCache != null)
-	            middlewareOptions.Options.NonceCache.AddNonce(nonce);
-	        else
-	            Response.Cookies.Append(
-	                ".AspNet.OpenIdConnect.Nonce." + middlewareOptions.Options.StringDataFormat.Protect(nonce), "N",
-	                    new CookieOptions { HttpOnly = true, Secure = Request.IsSecure });
+            if (middlewareOptions.Options.NonceCache != null)
+                middlewareOptions.Options.NonceCache.AddNonce(nonce);
+            else
+                Response.Cookies.Append(
+                    ".AspNet.OpenIdConnect.Nonce." + middlewareOptions.Options.StringDataFormat.Protect(nonce), "N",
+                        new CookieOptions { HttpOnly = true, Secure = Request.IsSecure });
 
             // Generate the state.
-	        var state = "OpenIdConnect.AuthenticationProperties=" +
-	                    Uri.EscapeDataString(middlewareOptions.Options.StateDataFormat.Protect(new AuthenticationProperties(
+            var state = "OpenIdConnect.AuthenticationProperties=" +
+                        Uri.EscapeDataString(middlewareOptions.Options.StateDataFormat.Protect(new AuthenticationProperties(
                             Request.Form.ToDictionary(i => i.Key, i => i.Value?.FirstOrDefault()))));
 
             // Return nonce to the Lock.
             return Json(new { nonce, state });
-	    }
-		
-		// GET: /Account/LogOff
-		[HttpGet]
-		public IActionResult LogOff()
-		{
-			if (Context.User.Identity.IsAuthenticated)
-			{
-				Context.Response.SignOut(new List<string>()
-				{
-					OpenIdConnectAuthenticationDefaults.AuthenticationType,
-					CookieAuthenticationDefaults.AuthenticationType
-				});
-			}
+        }
 
-			return RedirectToAction("Index", "Home");
-		}
+        // GET: /Account/LogOff
+        [HttpGet]
+        public IActionResult LogOff()
+        {
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                Context.Response.SignOut(new List<string>()
+                {
+                    OpenIdConnectAuthenticationDefaults.AuthenticationType,
+                    CookieAuthenticationDefaults.AuthenticationType
+                });
+            }
 
-		// GET: /Account/Manage
-		[HttpGet]
-		public IActionResult Manage()
-		{
-			return View();
-		}
-	}
+            return RedirectToAction("Index", "Home");
+        }
+
+        // GET: /Account/Manage
+        [HttpGet]
+        public IActionResult Manage()
+        {
+            return View();
+        }
+    }
 }
