@@ -9,7 +9,6 @@ using Microsoft.AspNet.Security;
 using Microsoft.AspNet.Security.Cookies;
 using Microsoft.AspNet.Security.OpenIdConnect;
 using Microsoft.Data.Entity;
-using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
@@ -17,6 +16,7 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Security.Principal;
+using Microsoft.Framework.ConfigurationModel;
 
 namespace AspNet5.WebApp.OpenIdConnect
 {
@@ -26,7 +26,7 @@ namespace AspNet5.WebApp.OpenIdConnect
 		{
 			// Setup configuration sources.
 			Configuration = new Configuration()
-				.AddJsonFile("config.json")
+                .AddJsonFile("config.json")
 				.AddEnvironmentVariables();
 		}
 		
@@ -35,6 +35,8 @@ namespace AspNet5.WebApp.OpenIdConnect
 		// This method gets called by the runtime.
 		public void ConfigureServices(IServiceCollection services)
 		{
+		    services.AddSingleton((provider) => Configuration);
+
 			// Add MVC services to the services container.
 			services.AddMvc();
 			
@@ -75,7 +77,7 @@ namespace AspNet5.WebApp.OpenIdConnect
 			app.UseOpenIdConnectAuthentication(options =>
 			{
 				options.ClientId = Configuration.Get("Auth0:ClientId");
-				options.Authority = Configuration.Get("Auth0:Domain");
+				options.Authority = "https://" + Configuration.Get("Auth0:Domain");
 				options.PostLogoutRedirectUri = Configuration.Get("Auth0:PostLogoutRedirectUri");
 				options.ResponseType = "token";
 				options.Notifications = new OpenIdConnectAuthenticationNotifications

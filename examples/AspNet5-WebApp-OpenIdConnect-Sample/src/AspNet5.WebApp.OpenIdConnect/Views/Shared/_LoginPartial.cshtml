@@ -1,5 +1,6 @@
-﻿@using System.Security.Principal
+﻿@inject Microsoft.Framework.ConfigurationModel.IConfiguration Config
 
+@using System.Security.Principal
 @if (User.Identity.IsAuthenticated)
 {
 	<ul class="nav navbar-nav navbar-right">
@@ -12,6 +13,34 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new {id = "loginLink"})</li>
+        <li><a href="javascript:showLock()">Log in with Lock</a></li>
     </ul>
+
+
+    <script src="https://cdn.auth0.com/js/lock-7.1.min.js"></script>
+    <script type="text/javascript">
+        if (!window.location.origin) {
+            window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+        }
+
+        var lock = new Auth0Lock(
+            '@Config.Get("Auth0:ClientId")',
+            '@Config.Get("Auth0:Domain")');
+
+        function showLock() {
+            $.post('@Url.Action("Prepare", "Account")', { '.redirect': window.location.pathname }, function (data) {
+                lock.show({
+                    callbackURL: window.location.origin,
+                    authParams: {
+                        nonce: data.nonce,
+                        state: data.state,
+                        scope: 'openid email name',
+                        response_mode: 'form_post',
+                        response_type: 'token'
+                    }
+                });
+            });
+        }
+</script>
 }

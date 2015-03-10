@@ -11,8 +11,7 @@ namespace AspNet5.WebApp.OpenIdConnect.Controllers
         {
             return View();
         }
-
-		[Authorize]
+        
 		public IActionResult About()
         {
             ViewBag.Message = "Your application description page.";
