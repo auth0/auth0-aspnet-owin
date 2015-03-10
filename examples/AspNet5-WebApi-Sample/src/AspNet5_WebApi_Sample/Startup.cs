@@ -32,7 +32,7 @@ namespace AspNet5_WebApi_Sample
 			app.UseOAuthBearerAuthentication(options =>
 			{
 				options.Audience = Configuration.Get("Auth0:ClientId");
-				options.Authority = Configuration.Get("Auth0:Domain");
+				options.Authority = "https://" + Configuration.Get("Auth0:Domain");
 				options.Notifications = new OAuthBearerAuthenticationNotifications
 				{
 					// OPTIONAL: you can read/modify the claims that are populated based on the JWT

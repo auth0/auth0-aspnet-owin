@@ -3,17 +3,17 @@
 @using System.Security.Principal
 @if (User.Identity.IsAuthenticated)
 {
-	<ul class="nav navbar-nav navbar-right">
-		<li>
-			@Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
-		</li>
-		<li>@Html.ActionLink("Log off", "LogOff", "Account")</li>
-	</ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </li>
+        <li>@Html.ActionLink("Log off", "LogOff", "Account")</li>
+    </ul>
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new {id = "loginLink"})</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
         <li><a href="javascript:showLock()">Log in with Lock</a></li>
     </ul>
 
@@ -42,5 +42,5 @@ else
                 });
             });
         }
-</script>
+    </script>
 }
