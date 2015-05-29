@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using System.IdentityModel.Metadata;
+using System.Net;
 using Kentor.AuthServices;
 using Kentor.AuthServices.Configuration;
 using Kentor.AuthServices.Owin;
@@ -21,14 +23,7 @@ namespace MvcSampleSAML
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
-                Provider = new CookieAuthenticationProvider
-                {
-                    // Enables the application to validate the security stamp when the user logs in.
-                    // This is a security feature which is used when you change a password or add an external login to your account.  
-                    //OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
-                    //    validateInterval: TimeSpan.FromMinutes(30),
-                    //    regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager))
-                }
+                Provider = new CookieAuthenticationProvider()
             });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
@@ -39,13 +34,13 @@ namespace MvcSampleSAML
         {
             var authServicesOptions = new KentorAuthServicesAuthenticationOptions(false)
             {
-                SPOptions = new SPOptions { EntityId = new EntityId("urn:MyApp"), ReturnUrl = new Uri("http://localhost:3500/") }
+                SPOptions = new SPOptions { EntityId = new EntityId("urn:" + ConfigurationManager.AppSettings["auth0:ApplicationName"]), ReturnUrl = new Uri(ConfigurationManager.AppSettings["auth0:ReturnUrl"]) }
             };
 
-            authServicesOptions.IdentityProviders.Add(new IdentityProvider(new EntityId("urn:YOUR-TENANT.auth0.com"), authServicesOptions.SPOptions)
+            authServicesOptions.IdentityProviders.Add(new IdentityProvider(new EntityId("urn:" + ConfigurationManager.AppSettings["auth0:Domain"]), authServicesOptions.SPOptions)
                 {
                     AllowUnsolicitedAuthnResponse = true,
-                    MetadataUrl = new Uri("https://YOUR-TENANT.auth0.com/samlp/metadata/YOUR-CLIENT-ID"),
+                    MetadataUrl = new Uri(String.Format("https://{0}/samlp/metadata/{1}", ConfigurationManager.AppSettings["auth0:Domain"], ConfigurationManager.AppSettings["auth0:ClientId"])),
                     Binding = Saml2BindingType.HttpPost
                 });
             return authServicesOptions;

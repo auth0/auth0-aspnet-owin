@@ -11,7 +11,7 @@ namespace MvcSampleSAML.Controllers
         }
 
         [Authorize]
-        public ActionResult Profile()
+        public ActionResult Claims()
         {
             return View(ClaimsPrincipal.Current.Claims);
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -40,6 +42,24 @@ namespace MvcSampleSAML.Controllers
 
             AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, CreateIdentity(externalIdentity));
             return RedirectToLocal(returnUrl);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff(string returnUrl)
+        {
+            var appTypes = AuthenticationManager.GetAuthenticationTypes().Select(at => at.AuthenticationType).ToArray();
+            AuthenticationManager.SignOut(appTypes);
+
+            var absoluteReturnUrl = string.IsNullOrEmpty(returnUrl) ?
+                this.Url.Action("Index", "Home", new { }, this.Request.Url.Scheme) :
+                this.Url.IsLocalUrl(returnUrl) ?
+                    new Uri(this.Request.Url, returnUrl).AbsoluteUri : returnUrl;
+
+            return Redirect(
+                string.Format("https://{0}/logout?returnTo={1}",
+                    ConfigurationManager.AppSettings["auth0:Domain"],
+                    absoluteReturnUrl));
         }
 
         private ActionResult RedirectToLocal(string returnUrl)
