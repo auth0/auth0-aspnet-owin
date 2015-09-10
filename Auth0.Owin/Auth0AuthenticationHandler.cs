@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.Owin;
 using Microsoft.Owin.Helpers;
 using Microsoft.Owin.Infrastructure;
@@ -13,6 +13,8 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Reflection;
+
 
 namespace Auth0.Owin
 {
@@ -168,6 +170,20 @@ namespace Auth0.Owin
 
                 string state = Options.StateDataFormat.Protect(properties);
 
+                //Get SDK info.
+                string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(); //Will be set to 0.0.0.0 if not defined in the AssemblyVersion.
+                
+                string jsonString = "{ 'name': 'Auth0-ASPNET-Owin', 'version': '" + assemblyVersion + "' }";
+                JObject sanitizedJson = JObject.Parse(jsonString);
+
+                string formattedSanitizedJson = sanitizedJson.ToString(Newtonsoft.Json.Formatting.None);
+
+                byte[] bytes = new byte[formattedSanitizedJson.Length * sizeof(char)];
+                System.Buffer.BlockCopy(formattedSanitizedJson.ToCharArray(), 0, bytes, 0, bytes.Length);
+
+                string encodedSDKInfo = HttpServerUtility.UrlTokenEncode(bytes);
+                // /sdk info.
+
                 string authorizationEndpoint =
                     string.Format(AuthorizeEndpoint, Options.Domain) +
                         "?client_id=" + Uri.EscapeDataString(Options.ClientId) +
@@ -175,6 +191,7 @@ namespace Auth0.Owin
                         "&response_type=code" +
                         "&redirect_uri=" + Uri.EscapeDataString(redirectUri) +
                         "&state=" + Uri.EscapeDataString(state) +
+                        (Options.Auth0SendSDKInfo ? "&auth0Client=" + encodedSDKInfo : string.Empty) +
                         (Options.Scope.Count > 0 ? "&scope=" + Uri.EscapeDataString(string.Join(" ", Options.Scope)) : string.Empty);
 
                 var redirectContext = new Auth0ApplyRedirectContext(

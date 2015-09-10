@@ -29,6 +29,7 @@ namespace Auth0.Owin
             Connection = string.Empty;
             Domain = string.Empty;
             SaveIdToken = true;
+            Auth0SendSDKInfo = true;
         }
 
         /// <summary>
@@ -46,6 +47,8 @@ namespace Auth0.Owin
         public string Domain { get; set; }
         
         public bool SaveIdToken { get; set; }
+
+        public bool Auth0SendSDKInfo { get; set; }
 
         /// <summary>
         /// Gets or sets the a pinned certificate validator to use to validate the endpoints used
