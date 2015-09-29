@@ -127,3 +127,27 @@ And set same value when the widget is shown:
         });
     }
 </script>
+
+## Token Exchange
+
+In the token exchange phase the Owin middleware will exchange the authorization code for an access_token, id_token (and optionally also a refresh token). 
+
+If your application is not configured correctly this exchange can fail. The provider allows you to catch all errors that occur during the token exchange to log them or take additional actions:
+
+var provider = new Auth0.Owin.Auth0AuthenticationProvider
+{
+    OnTokenExchangeFailed = (context) =>
+    {
+        logger.Error(context.Exception.Message);
+    }
+};
+
+Depending on your architecture it could be possible that SSL is handled by an other tier in your network (like a load balancer), which can cause issues with the redirect_uri during the token exchange. The provider allows you to override the generated redirect_uri:
+
+var provider = new Auth0.Owin.Auth0AuthenticationProvider
+{
+    OnCustomizeTokenExchangeRedirectUri = (context) =>
+    {
+        context.RedirectUri = "https://some/other/url"
+    }
+};
