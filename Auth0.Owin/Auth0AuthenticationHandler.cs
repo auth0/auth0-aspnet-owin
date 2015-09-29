@@ -63,13 +63,13 @@ namespace Auth0.Owin
                     CultureInfo.InvariantCulture,
                     "client_id={0}&redirect_uri={1}&client_secret={2}&code={3}&grant_type=authorization_code",
                     Uri.EscapeDataString(Options.ClientId),
-                    Uri.EscapeDataString(GenerateRedirectUri()),
+                    Uri.EscapeDataString(GenerateRedirectUri(properties)),
                     Uri.EscapeDataString(Options.ClientSecret),
                     code);
 
                 var body = new Dictionary<string, string> {
                     { "client_id", Options.ClientId },
-                    { "redirect_uri", GenerateRedirectUri() },
+                    { "redirect_uri", GenerateRedirectUri(properties) },
                     { "client_secret", Options.ClientSecret },
                     { "code", Uri.EscapeDataString(code) },
                     { "grant_type", "authorization_code" }
@@ -278,12 +278,16 @@ namespace Auth0.Owin
             return false;
         }
 
-        private string GenerateRedirectUri()
+        private string GenerateRedirectUri(AuthenticationProperties properties)
         {
             string requestPrefix = Request.Scheme + "://" + Request.Host;
 
-            string redirectUri = requestPrefix + RequestPathBase + Options.CallbackPath; // + "?state=" + Uri.EscapeDataString(Options.StateDataHandler.Protect(state));            
-            return redirectUri;
+            string redirectUri = requestPrefix + RequestPathBase + Options.CallbackPath; // + "?state=" + Uri.EscapeDataString(Options.StateDataHandler.Protect(state));          
+
+            var context = new Auth0CustomizeTokenExchangeRedirectUriContext(Request.Context, Options, properties, redirectUri);
+            Options.Provider.CustomizeTokenExchangeRedirectUri(context);
+
+            return context.RedirectUri;
         }
     }
 }

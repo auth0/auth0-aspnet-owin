@@ -17,7 +17,8 @@ namespace Auth0.Owin
             OnReturnEndpoint = context => Task.FromResult<object>(null);
             OnApplyRedirect = context =>
                 context.Response.Redirect(context.RedirectUri);
-            OnTokenExchangeFailed = context => { }; 
+            OnTokenExchangeFailed = context => { };
+            OnCustomizeTokenExchangeRedirectUri = context => { };
         }
 
         /// <summary>
@@ -34,6 +35,11 @@ namespace Auth0.Owin
         /// Gets or sets the delegate that is invoked when the ApplyRedirect method is invoked.
         /// </summary>
         public Action<Auth0ApplyRedirectContext> OnApplyRedirect { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delegate that is invoked when the CustomizeTokenExchangeRedirectUri method is invoked.
+        /// </summary>
+        public Action<Auth0CustomizeTokenExchangeRedirectUriContext> OnCustomizeTokenExchangeRedirectUri { get; set; }
 
         /// <summary>
         /// Gets or sets the delegate that is invoked when the TokenExchangeFailed method is invoked.
@@ -67,6 +73,17 @@ namespace Auth0.Owin
         public virtual void ApplyRedirect(Auth0ApplyRedirectContext context)
         {
             OnApplyRedirect(context);
+        }
+
+
+        /// <summary>
+        /// Called the redirect_uri is generated during the token exchange. 
+        /// You may need to change this value if you handle SSL offloading on the load balancer.
+        /// </summary>
+        /// <param name="context">Contains redirect URI and <see cref="AuthenticationProperties"/> of the challenge </param>
+        public void CustomizeTokenExchangeRedirectUri(Auth0CustomizeTokenExchangeRedirectUriContext context)
+        {
+            OnCustomizeTokenExchangeRedirectUri(context);
         }
 
         /// <summary>

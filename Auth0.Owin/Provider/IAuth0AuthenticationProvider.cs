@@ -28,6 +28,13 @@ namespace Auth0.Owin
         void ApplyRedirect(Auth0ApplyRedirectContext context);
 
         /// <summary>
+        /// Called the redirect_uri is generated during the token exchange. 
+        /// You may need to change this value if you handle SSL offloading on the load balancer.
+        /// </summary>
+        /// <param name="context">Contains redirect URI and <see cref="AuthenticationProperties"/> of the challenge </param>
+        void CustomizeTokenExchangeRedirectUri(Auth0CustomizeTokenExchangeRedirectUriContext context);
+
+        /// <summary>
         /// Called when a token exchange fails in the Auth0 middleware.
         /// </summary>
         void TokenExchangeFailed(Auth0TokenExchangeFailedContext context);
