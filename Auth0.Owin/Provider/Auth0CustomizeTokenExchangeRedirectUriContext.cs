@@ -30,7 +30,7 @@ namespace Auth0.Owin
         /// Gets the URI used for the redirect operation.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Represents header value")]
-        public string RedirectUri { get; private set; }
+        public string RedirectUri { get; set; }
 
         /// <summary>
         /// Gets the authenticaiton properties of the challenge
