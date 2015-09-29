@@ -68,11 +68,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Provider\Auth0TokenExchangeFailedContext.cs" />
     <Compile Include="Provider\Auth0ApplyRedirectContext.cs" />
     <Compile Include="Provider\Auth0AuthenticationProvider.cs" />
     <Compile Include="Provider\Auth0ReturnEndpointContext.cs" />
     <Compile Include="Provider\Auth0AuthenticatedContext.cs" />
     <Compile Include="Provider\IAuth0AuthenticationProvider.cs" />
+    <Compile Include="TokenExchangeFailedException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

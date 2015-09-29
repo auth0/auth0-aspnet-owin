@@ -17,6 +17,7 @@ namespace Auth0.Owin
             OnReturnEndpoint = context => Task.FromResult<object>(null);
             OnApplyRedirect = context =>
                 context.Response.Redirect(context.RedirectUri);
+            OnTokenExchangeFailed = context => { }; 
         }
 
         /// <summary>
@@ -33,6 +34,11 @@ namespace Auth0.Owin
         /// Gets or sets the delegate that is invoked when the ApplyRedirect method is invoked.
         /// </summary>
         public Action<Auth0ApplyRedirectContext> OnApplyRedirect { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delegate that is invoked when the TokenExchangeFailed method is invoked.
+        /// </summary>
+        public Action<Auth0TokenExchangeFailedContext> OnTokenExchangeFailed { get; set; }
 
         /// <summary>
         /// Invoked whenever Auth0 succesfully authenticates a user
@@ -61,6 +67,14 @@ namespace Auth0.Owin
         public virtual void ApplyRedirect(Auth0ApplyRedirectContext context)
         {
             OnApplyRedirect(context);
+        }
+
+        /// <summary>
+        /// Called when a token exchange fails in the Auth0 middleware.
+        /// </summary>
+        public void TokenExchangeFailed(Auth0TokenExchangeFailedContext context)
+        {
+            OnTokenExchangeFailed(context);
         }
     }
 }

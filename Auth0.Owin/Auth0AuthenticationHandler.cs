@@ -34,12 +34,11 @@ namespace Auth0.Owin
         protected override async Task<AuthenticationTicket> AuthenticateCoreAsync()
         {
             AuthenticationProperties properties = null;
+            string code = null;
+            string state = null;
 
             try
             {
-                string code = null;
-                string state = null;
-
                 IReadableStringCollection query = Request.Query;
                 IList<string> values = query.GetValues("code");
                 if (values != null && values.Count == 1)
@@ -77,7 +76,8 @@ namespace Auth0.Owin
                 };
 
                 HttpResponseMessage tokenResponse = await _httpClient.PostAsync(string.Format(TokenEndpoint, Options.Domain), new FormUrlEncodedContent(body), Request.CallCancelled);
-                tokenResponse.EnsureSuccessStatusCode();
+                await EnsureTokenExchangeSuccessful(tokenResponse);
+
                 string text = await tokenResponse.Content.ReadAsStringAsync();
                 JObject tokens = JObject.Parse(text);
 
@@ -128,9 +128,32 @@ namespace Auth0.Owin
             }
             catch (Exception ex)
             {
+                var tokenExchangeFailedContext = new Auth0TokenExchangeFailedContext(
+                    Context, Options,
+                    ex, code, state);
+                Options.Provider.TokenExchangeFailed(tokenExchangeFailedContext);
+
                 _logger.WriteError(ex.Message);
             }
             return new AuthenticationTicket(null, properties);
+        }
+
+        private async Task EnsureTokenExchangeSuccessful(HttpResponseMessage tokenResponse)
+        {
+            if (!tokenResponse.IsSuccessStatusCode)
+            {
+                string errorResponse = null;
+
+                try
+                {
+                    errorResponse = await tokenResponse.Content.ReadAsStringAsync();
+                    tokenResponse.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    throw new TokenExchangeFailedException(errorResponse, ex);
+                }
+            }
         }
 
         protected override Task ApplyResponseChallengeAsync()

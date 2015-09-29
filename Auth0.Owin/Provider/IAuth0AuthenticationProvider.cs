@@ -26,5 +26,10 @@ namespace Auth0.Owin
         /// </summary>
         /// <param name="context">Contains redirect URI and <see cref="AuthenticationProperties"/> of the challenge </param>
         void ApplyRedirect(Auth0ApplyRedirectContext context);
+
+        /// <summary>
+        /// Called when a token exchange fails in the Auth0 middleware.
+        /// </summary>
+        void TokenExchangeFailed(Auth0TokenExchangeFailedContext context);
     }
 }
