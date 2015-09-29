@@ -18,12 +18,13 @@ namespace Auth0.Owin
         /// <param name="user">The JSON-serialized user</param>
         /// <param name="accessToken">Auth0 Access token</param>
         /// <param name="expires">Seconds until expiration</param>
-        public Auth0AuthenticatedContext(IOwinContext context, JObject user, string accessToken, string idToken)
+        public Auth0AuthenticatedContext(IOwinContext context, JObject user, string accessToken, string idToken, string refreshToken)
             : base(context)
         {
             User = user;
             AccessToken = accessToken;
             IdToken = idToken;
+            RefreshToken = refreshToken;
 
             Id = TryGetValue(user, "user_id");
             Name = TryGetValue(user, "name");
@@ -64,8 +65,10 @@ namespace Auth0.Owin
         public string Provider { get; private set; }
         
         public string ProviderAccessToken { get; private set; }
-        
+
         public string IdToken { get; private set; }
+
+        public string RefreshToken { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="ClaimsIdentity"/> representing the user

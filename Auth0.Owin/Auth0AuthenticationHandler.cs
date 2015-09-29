@@ -83,6 +83,7 @@ namespace Auth0.Owin
 
                 string accessToken = tokens["access_token"].Value<string>();
                 string idToken = tokens["id_token"] != null ? tokens["id_token"].Value<string>() : null;
+                string refreshToken = tokens["refresh_token"] != null ? tokens["refresh_token"].Value<string>() : null;
 
                 HttpResponseMessage graphResponse = await _httpClient.GetAsync(
                    string.Format(UserInfoEndpoint, Options.Domain) + "?access_token=" + Uri.EscapeDataString(accessToken), Request.CallCancelled);
@@ -90,7 +91,7 @@ namespace Auth0.Owin
                 text = await graphResponse.Content.ReadAsStringAsync();
                 JObject user = JObject.Parse(text);
 
-                var context = new Auth0AuthenticatedContext(Context, user, accessToken, idToken);
+                var context = new Auth0AuthenticatedContext(Context, user, accessToken, idToken, refreshToken);
                 context.Identity = new ClaimsIdentity(
                     new[]
                     {
@@ -116,6 +117,7 @@ namespace Auth0.Owin
                 if (!string.IsNullOrWhiteSpace(context.ProviderAccessToken)) context.Identity.AddClaim(new Claim("provider_access_token", context.ProviderAccessToken, "http://www.w3.org/2001/XMLSchema#string", context.Connection));
 
                 if (Options.SaveIdToken && !string.IsNullOrWhiteSpace(context.IdToken)) context.Identity.AddClaim(new Claim("id_token", context.IdToken, "http://www.w3.org/2001/XMLSchema#string", Constants.Auth0Issuer));
+                if (Options.SaveRefreshToken && !string.IsNullOrWhiteSpace(context.RefreshToken)) context.Identity.AddClaim(new Claim("refresh_token", context.RefreshToken, "http://www.w3.org/2001/XMLSchema#string", Constants.Auth0Issuer));
                 context.Identity.AddClaim(new Claim("access_token", context.AccessToken, "http://www.w3.org/2001/XMLSchema#string", Constants.Auth0Issuer));
 
                 context.Properties = properties ?? new AuthenticationProperties();

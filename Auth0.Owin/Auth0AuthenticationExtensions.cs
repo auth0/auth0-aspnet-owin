@@ -54,7 +54,8 @@ namespace Owin
             string connection = null,
             bool saveIdToken = true,
             string scopes = "openid",
-            IAuth0AuthenticationProvider provider = null)
+            IAuth0AuthenticationProvider provider = null,
+            bool saveRefreshToken = false)
         {
             return UseAuth0Authentication(
                 app,
@@ -69,7 +70,8 @@ namespace Owin
                     AuthenticationType = string.IsNullOrEmpty(connection) ? Constants.DefaultAuthenticationType : connection,
                     SaveIdToken = saveIdToken,
                     Scope = scopes.Split(' '),
-                    Provider = provider
+                    Provider = provider,
+                    SaveRefreshToken = saveRefreshToken
                 });
         }
     }

@@ -44,8 +44,10 @@ namespace Auth0.Owin
         public string Connection { get; set; }
 
         public string Domain { get; set; }
-        
+
         public bool SaveIdToken { get; set; }
+
+        public bool SaveRefreshToken { get; set; }
 
         /// <summary>
         /// Gets or sets the a pinned certificate validator to use to validate the endpoints used
