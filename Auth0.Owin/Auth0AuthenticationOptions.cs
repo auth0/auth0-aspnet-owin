@@ -29,6 +29,7 @@ namespace Auth0.Owin
             Connection = string.Empty;
             Domain = string.Empty;
             SaveIdToken = true;
+            EnableDiagnostics = true;
         }
 
         /// <summary>
@@ -115,5 +116,10 @@ namespace Auth0.Owin
         /// A list of permissions to request.
         /// </summary>
         public IList<string> Scope { get; set; }
+
+        /// <summary>
+        ///  Allow diagnostic information to be sent to Auth0.
+        /// </summary>
+        public bool EnableDiagnostics { get; set; }
     }
 }

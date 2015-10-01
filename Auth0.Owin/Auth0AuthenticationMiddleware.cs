@@ -64,6 +64,11 @@ namespace Auth0.Owin
             _httpClient = new HttpClient(ResolveHttpMessageHandler(Options));
             _httpClient.Timeout = Options.BackchannelTimeout;
             _httpClient.MaxResponseContentBufferSize = 1024 * 1024 * 10; // 10 MB
+
+            if (Options.EnableDiagnostics)
+            {
+                _httpClient.DefaultRequestHeaders.Add("Auth0-Client", DiagnosticsHeader.Default.ToString());
+            }
         }
 
         /// <summary>
