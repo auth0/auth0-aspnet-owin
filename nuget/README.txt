@@ -32,7 +32,7 @@ public void ConfigureAuth(IAppBuilder app)
 
 <a href="javascript:lock.signin();">Login</a>
 
-<script src="http://cdn.auth0.com/js/lock-6.6.js"></script>
+<script src="http://cdn.auth0.com/js/lock-7.12.min.js"></script>
 <script type="text/javascript">
 	var lock = new Auth0Lock({
         '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]'
@@ -130,7 +130,7 @@ And set same value when the widget is shown:
 
 ## Token Exchange
 
-In the token exchange phase the Owin middleware will exchange the authorization code for an access_token, id_token (and optionally also a refresh token). 
+In the token exchange phase the Owin middleware will exchange the authorization code for an access_token, id_token (and optionally also a refresh token).
 
 If your application is not configured correctly this exchange can fail. The provider allows you to catch all errors that occur during the token exchange to log them or take additional actions:
 

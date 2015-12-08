@@ -13,7 +13,7 @@
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>
     }
-    
+
     <script src="~/Scripts/jquery-1.10.2.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(function () {
@@ -47,13 +47,13 @@ else
         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
         <li><a href="javascript:showLock();">Login</a></li>
     </ul>
-    
-    <script src="https://cdn.auth0.com/js/lock-7.min.js"></script>
+
+    <script src="https://cdn.auth0.com/js/lock-7.12.min.js"></script>
     <script type="text/javascript">
         if (!window.location.origin) {
             window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
         }
-        
+
         var lock = new Auth0Lock(
             '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]',
             '@System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]');
@@ -62,7 +62,7 @@ else
             // optional: set xsrf and returnUrl
             /* var xsrf = 'your_xsrf_random_string';
             var returnUrl = window.location.pathname;*/
-            
+
             lock.show({
                 callbackURL: window.location.origin + '/signin-auth0',
                 /*authParams: {
