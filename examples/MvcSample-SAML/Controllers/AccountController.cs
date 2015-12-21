@@ -57,7 +57,7 @@ namespace MvcSampleSAML.Controllers
                     new Uri(this.Request.Url, returnUrl).AbsoluteUri : returnUrl;
 
             return Redirect(
-                string.Format("https://{0}/logout?returnTo={1}",
+                string.Format("https://{0}/v2/logout?returnTo={1}",
                     ConfigurationManager.AppSettings["auth0:Domain"],
                     absoluteReturnUrl));
         }
