@@ -5,62 +5,57 @@ This sample shows how to integrate your ASP.NET MVC application with Auth0 using
 ## Configuring the application in Auth0
 
 1. Create a new application in Auth0
-2. Enable the SAML addon on the Addons tab
-3. In the settings of the SAML addon, specify the callback url `http://localhost:3500/AuthServices/Acs` and these settings:
-```
-{
-  "audience":  "urn:MyApp",
-}
-```
+2. Enable the WS-FED addon on the Addons tab
+3. In the settings of the SAML addon, specify the callback url `http://localhost:3500/` (or whatever the actual URL for your applications is, 
+and set the Realm to `urn:MyApp`.
 
 ## Configuring the ASP.NET MVC application. 
 
-This sample uses the **Kentor.AuthServices.Owin** NuGet package for SAML support. The library needs to be configured at application startup:
+This sample uses the **Microsoft.Owin.Security.WsFederation** NuGet package for WS-FED support, so install the package:
+
+```
+Install-Package Microsoft.Owin.Security.WsFederation
+```
+
+The library needs to be configured at application startup:
 
 ```
 public partial class Startup
 {
     public void Configuration(IAppBuilder app)
     {
+        app.SetDefaultSignInAsAuthenticationType(WsFederationAuthenticationDefaults.AuthenticationType);
+
         app.UseCookieAuthentication(new CookieAuthenticationOptions
         {
-            AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-            LoginPath = new PathString("/Account/Login")
+            AuthenticationType = WsFederationAuthenticationDefaults.AuthenticationType,
+            LoginPath = new PathString("/Account/Login"),
+            Provider = new CookieAuthenticationProvider()
         });
-        app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-        app.UseKentorAuthServicesAuthentication(CreateAuthServicesOptions());
-    }
-
-    private static KentorAuthServicesAuthenticationOptions CreateAuthServicesOptions()
-    {
-        var authServicesOptions = new KentorAuthServicesAuthenticationOptions(false)
+        app.UseWsFederationAuthentication(new WsFederationAuthenticationOptions
         {
-            SPOptions = new SPOptions 
-            { 
-              EntityId = new EntityId("urn:MyApp"), 
-              ReturnUrl = new Uri("http://localhost:3500/") 
-            }
-        };
-        authServicesOptions.IdentityProviders.Add(new IdentityProvider(new EntityId("urn:YOUR-TENANT.auth0.com"), 
-                authServicesOptions.SPOptions)
+            MetadataAddress = "https://YOUR DOMAIN/wsfed/YOUR CLIENT ID/FederationMetadata/2007-06/FederationMetadata.xml",
+            Wtrealm = "urn:MyApp",
+            Notifications = new WsFederationAuthenticationNotifications
             {
-                AllowUnsolicitedAuthnResponse = true,
-                MetadataUrl = new Uri("https://YOUR-TENANT.auth0.com/samlp/metadata/YOUR-CLIENT-ID"),
-                Binding = Saml2BindingType.HttpPost
-            });
-        return authServicesOptions;
+                SecurityTokenValidated = notification =>
+                {
+                    notification.AuthenticationTicket.Identity.AddClaim(new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "Auth0"));
+                    return Task.FromResult(true);
+                }
+            }
+        });
     }
 }
 ```
 
-Note that the EntityId needs to match the audience you configured in Auth0.
 
 Finally the Account controller will start the Login flow to Auth0 and will also process the response coming from Auth0.
 
 ```
 public ActionResult Login(string returnUrl)
 {
-    return new ChallengeResult("KentorAuthServices", Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+    return new ChallengeResult("Federation", Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
 }
 
 [AllowAnonymous]
