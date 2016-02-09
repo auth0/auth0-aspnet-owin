@@ -22,7 +22,7 @@ namespace MvcSample.Controllers
 
         public ActionResult Login(string returnUrl)
         {
-            return new ChallengeResult("KentorAuthServices", Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult("Federation", Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
         [AllowAnonymous]

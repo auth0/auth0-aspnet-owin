@@ -25,9 +25,12 @@ namespace MvcSample
                 LoginPath = new PathString("/Account/Login"),
                 Provider = new CookieAuthenticationProvider()
             });
+
             app.UseWsFederationAuthentication(new WsFederationAuthenticationOptions
             {
-                MetadataAddress = String.Format("https://{0}/wsfed/{1}/FederationMetadata/2007-06/FederationMetadata.xml", ConfigurationManager.AppSettings["auth0:Domain"], ConfigurationManager.AppSettings["auth0:ClientId"]),
+                MetadataAddress = String.Format("https://{0}/wsfed/{1}/FederationMetadata/2007-06/FederationMetadata.xml", 
+                    ConfigurationManager.AppSettings["auth0:Domain"], 
+                    ConfigurationManager.AppSettings["auth0:ClientId"]),
                 Wtrealm = "urn:" + ConfigurationManager.AppSettings["auth0:ApplicationName"],
                 Notifications = new WsFederationAuthenticationNotifications
                 {

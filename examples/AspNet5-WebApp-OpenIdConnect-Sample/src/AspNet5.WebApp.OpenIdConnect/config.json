@@ -1,7 +1,0 @@
-{
-	"Auth0": {
-		"ClientId": "{CLIENT_ID}",
-		"Domain": "{DOMAIN}",
-		"PostLogoutRedirectUri":  "http://localhost:49848/"
-	}
-}

@@ -48,7 +48,7 @@ else
         <li><a href="javascript:showLock();">Login</a></li>
     </ul>
 
-    <script src="https://cdn.auth0.com/js/lock-7.12.min.js"></script>
+    <script src="https://cdn.auth0.com/js/lock-8.2.min.js"></script>
     <script type="text/javascript">
         if (!window.location.origin) {
             window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
@@ -64,11 +64,13 @@ else
             var returnUrl = window.location.pathname;*/
 
             lock.show({
-                callbackURL: window.location.origin + '/signin-auth0',
-                /*authParams: {
-                  state: 'xsrf=' + xsrf + '&ru=' + returnUrl
-                }*/
+                callbackURL: window.location.origin + '/signin-auth0'
+                , responseType: 'code'
+                , authParams: {
+                    scope: 'openid profile'
+                }
             });
+
         }
     </script>
 }
