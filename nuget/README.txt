@@ -32,7 +32,7 @@ public void ConfigureAuth(IAppBuilder app)
 
 <a href="javascript:lock.signin();">Login</a>
 
-<script src="http://cdn.auth0.com/js/lock-7.12.min.js"></script>
+<script src="http://cdn.auth0.com/js/lock-8.2.2.min.js"></script>
 <script type="text/javascript">
 	var lock = new Auth0Lock({
         '@System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"]'
