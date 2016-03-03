@@ -1,0 +1,18 @@
+﻿@using Microsoft.Owin.Security
+@model ServerSideLogin.Models.LoginViewModel
+
+<h4>Use another service to log in.</h4>
+<hr />
+@{
+    using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }))
+    {
+        @Html.AntiForgeryToken()
+        <div id="socialLoginList">
+            <p>
+                <button type="submit" class="btn btn-default" id="facebook" name="connection" value="facebook" title="Log in using your Facebook account">Facebook</button>
+                <button type="submit" class="btn btn-default" id="google-oauth2" name="connection" value="google-oauth2" title="Log in using your Google account">Google</button>
+                <button type="submit" class="btn btn-default" id="twitter" name="connection" value="twitter" title="Log in using your Twitter account">Twitter</button>
+            </p>
+        </div>
+    }
+}

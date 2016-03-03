@@ -1,0 +1,22 @@
+﻿@model ServerSideLogin.Models.LoginSuccessViewModel
+
+@{
+    ViewBag.Title = "Log in";
+}
+
+<h2>Signing in...</h2>
+<div class="row">
+    <div class="col-md-8">
+        You are being signed in...
+    </div>
+
+    @Html.Raw(Model.HtmlForm)
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    <script type="text/javascript">
+        $(function() {
+            $('form').submit();
+        });
+    </script>
+}
