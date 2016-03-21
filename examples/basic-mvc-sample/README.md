@@ -2,7 +2,7 @@
 This is the seed project you need to use if you're going to create an ASP.NET application using OWIN.
 
 #Running the example
-In order to run the example you need to have Visual Studio 2013 installed.
+In order to run the example you need to have Visual Studio 2013/2015 installed.
 
 You also need to set the ClientSecret, ClientId and Domain of your Auth0 app in the web.config file. To do that just look for the following keys and enter the right content:
 ```CSharp
