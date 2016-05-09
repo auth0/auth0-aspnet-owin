@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Auth0-ASPNET-Owin</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title>Configure Auth0 with ASP.NET 4.5 (Owin)</title>
     <authors>Auth0</authors>
     <owners>Auth0</owners>
@@ -16,17 +16,19 @@
     <tags>asp.net OWIN katana authentication auth0 linkedin amazon google twitter facebook github vkontakte windowslive waad adfs saml google-apps</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="Microsoft.Owin.Security.Cookies" version="2.0.0" />
-        <dependency id="Microsoft.Owin.Security.OAuth" version="2.0.0" />
-        <dependency id="Microsoft.AspNet.Identity.Owin" version="1.0.0" />
+        <dependency id="Microsoft.AspNet.Identity.Owin" version="2.0.0" />
+        <dependency id="Microsoft.AspNet.Mvc" version="5.0.0" />
         <dependency id="Microsoft.Owin.Host.SystemWeb" version="2.0.0" />
+        <dependency id="Microsoft.Owin" version="2.0.0"  />
+        <dependency id="Microsoft.Owin.Security" version="2.0.0" />
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Owin" version="1.0" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="content\net45\Controllers\Auth0AccountController.cs.pp" target="content\net45\Controllers\Auth0AccountController.cs.pp" />
     <file src="content\net45\web.config.install.xdt" target="content\net45\web.config.install.xdt" />
-    <file src="..\src\Auth0.Owin\bin\release\Auth0.Owin.dll" target="lib\net45\Auth0.Owin.dll" />
     <file src="README.txt" target="README.txt" />
   </files>
 </package>

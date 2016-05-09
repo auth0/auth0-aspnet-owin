@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth0.Owin", "src\Auth0.Owin\Auth0.Owin.csproj", "{49650EA7-69AE-4EA6-A308-810C4738D663}"
 EndProject
@@ -14,6 +14,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{E2DB39FE-79D2-437A-9382-1A262079B6FF}"
 	ProjectSection(SolutionItems) = preProject
 		nuget\Auth0-ASPNET-Owin.nuspec = nuget\Auth0-ASPNET-Owin.nuspec
+		nuget\README.txt = nuget\README.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{A1D75471-5CDA-457D-84F1-2CB6B2ABDA57}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net45", "net45", "{6391DD9B-1D26-4FB7-BC1B-0E18F310EDAF}"
+	ProjectSection(SolutionItems) = preProject
+		nuget\content\net45\web.config.install.xdt = nuget\content\net45\web.config.install.xdt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{E4851FEC-942E-488C-8438-63338CD72203}"
+	ProjectSection(SolutionItems) = preProject
+		nuget\content\net45\Controllers\Auth0AccountController.cs.pp = nuget\content\net45\Controllers\Auth0AccountController.cs.pp
 	EndProjectSection
 EndProject
 Global
@@ -37,5 +50,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{49650EA7-69AE-4EA6-A308-810C4738D663} = {454C4C96-3B49-4BDC-A74D-2BDAC7D6B5F1}
 		{C24F63A3-AAB2-4E65-8A74-FED414A232D4} = {1E3AABD0-2D92-4ACB-A652-FA307FBAA24E}
+		{A1D75471-5CDA-457D-84F1-2CB6B2ABDA57} = {E2DB39FE-79D2-437A-9382-1A262079B6FF}
+		{6391DD9B-1D26-4FB7-BC1B-0E18F310EDAF} = {A1D75471-5CDA-457D-84F1-2CB6B2ABDA57}
+		{E4851FEC-942E-488C-8438-63338CD72203} = {6391DD9B-1D26-4FB7-BC1B-0E18F310EDAF}
 	EndGlobalSection
 EndGlobal
