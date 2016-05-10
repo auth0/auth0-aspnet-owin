@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>Auth0-ASPNET-Owin</id>
-    <version>1.0.3</version>
-    <title>Configure Auth0 with ASP.NET 4.5 (Owin)</title>
+    <id>Auth0-ASPNET-Owin-Libs</id>
+    <version>1.0.0</version>
+    <title>Configure Auth0 with ASP.NET 4.5 (Owin) - Libraries Only</title>
     <authors>Auth0</authors>
     <owners>Auth0</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -12,13 +12,12 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       Plug into the ASP.NET 4.5 Owin infrastructure (middleware) and extends default providers with more social providers like Amazon, Facebook, GitHub, LinkedIn, LiveId Google, Twitter, Paypal, vKontakte and Enterprise provides like any IdP that speaks SAML Protocol, ADFS, Google Apps, ADFS, Windows Azure AD, etc.
+
+      This package contains only the OWIN middleware. If you want to use this middleware with ASP.NET MVC it is suggested that you install the Auth0-ASPNET-Owin package, as that adds the required Controller and does a web.config transformation.
     </description>
     <tags>asp.net OWIN katana authentication auth0 linkedin amazon google twitter facebook github vkontakte windowslive waad adfs saml google-apps</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="Microsoft.AspNet.Identity.Owin" version="2.0.0" />
-        <dependency id="Microsoft.AspNet.Mvc" version="5.0.0" />
-        <dependency id="Microsoft.Owin.Host.SystemWeb" version="2.0.0" />
         <dependency id="Microsoft.Owin" version="2.0.0"  />
         <dependency id="Microsoft.Owin.Security" version="2.0.0" />
         <dependency id="Newtonsoft.Json" version="5.0.6" />
@@ -27,9 +26,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="content\net45\Controllers\Auth0AccountController.cs.pp" target="content\net45\Controllers\Auth0AccountController.cs.pp" />
     <file src="content\net45\web.config.install.xdt" target="content\net45\web.config.install.xdt" />
     <file src="..\src\Auth0.Owin\bin\release\Auth0.Owin.dll" target="lib\net45\Auth0.Owin.dll" />
-    <file src="README.txt" target="README.txt" />
+    <file src="README-Libs.txt" target="README.txt" />
   </files>
 </package>

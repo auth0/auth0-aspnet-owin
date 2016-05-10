@@ -13,7 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth0OwinTest", "test\Auth0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{E2DB39FE-79D2-437A-9382-1A262079B6FF}"
 	ProjectSection(SolutionItems) = preProject
+		nuget\Auth0-ASPNET-Owin-Libs.nuspec = nuget\Auth0-ASPNET-Owin-Libs.nuspec
 		nuget\Auth0-ASPNET-Owin.nuspec = nuget\Auth0-ASPNET-Owin.nuspec
+		nuget\README-Libs.txt = nuget\README-Libs.txt
 		nuget\README.txt = nuget\README.txt
 	EndProjectSection
 EndProject

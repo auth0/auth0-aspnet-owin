@@ -2,7 +2,7 @@
 
     Note: These settings can be found in the Auth0 dashboard (https://app.auth0.com/).
 
-2- Edit App_Start\Startup.Auth.cs in order to call the UseAuth0Authentication extension method:
+2- Edit App_Start\Startup.Auth.cs in order to call the UseAuth0Authentication extension method.
 
 public void ConfigureAuth(IAppBuilder app)
 {
@@ -21,12 +21,14 @@ public void ConfigureAuth(IAppBuilder app)
     // ...
 
     app.UseAuth0Authentication(
-    	clientId:       System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"],
-    	clientSecret:   System.Configuration.ConfigurationManager.AppSettings["auth0:ClientSecret"],
-    	domain:         System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"]);
+        clientId: System.Configuration.ConfigurationManager.AppSettings["auth0:ClientId"],
+        clientSecret: System.Configuration.ConfigurationManager.AppSettings["auth0:ClientSecret"],
+        domain: System.Configuration.ConfigurationManager.AppSettings["auth0:Domain"],
+        redirectPath: "/Account/ExternalLoginCallback"
+        );
 }
 
-> Note: This nuget provides a simple controller (Auth0AccountController) to process the authentication response from Auth0. If you want to use your own controller, you need to set the "redirectPath" parameter. For example, in order to use the implementation provided by Visual Studio templates, use the following: redirectPath: "/Account/ExternalLoginCallback".
+> Note: If you do not have a Startup.Auth.cs file in your project you can create a new Startup class, by going to Project > Add New Item, and create a new OWIN Startup class.
 
 3- Include the Auth0 Lock:
 
