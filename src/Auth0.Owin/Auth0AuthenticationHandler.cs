@@ -278,7 +278,7 @@ namespace Auth0.Owin
                     if (context.Request.Query["state"] != null && context.Request.Query["state"].Contains("ru="))
                     {
                         // set returnUrl with state -> ru
-                        var state = HttpUtility.ParseQueryString(context.Request.Query["state"]);
+                        var state = HttpUtilities.ParseQueryString(context.Request.Query["state"]);
                         redirectUri = WebUtilities.AddQueryString(redirectUri, "returnUrl", state["ru"]);
                     }
 
