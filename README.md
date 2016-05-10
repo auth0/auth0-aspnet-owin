@@ -2,9 +2,23 @@ Owin/Katana Authentication Handler for Auth0. Plugs into the ASP.NET 4.5 Owin in
 
 > Note: ASP.NET 5 support is available in the following repository https://github.com/auth0/auth0-aspnet5
 
+## Quickstart
+
+You can find the ASP.NET (OWIN) quickstart which utilizes this package on the Auth0 Documentation Website at [https://auth0.com/docs/quickstart/webapp/aspnet-owin/](https://auth0.com/docs/quickstart/webapp/aspnet-owin/)
+ 
 ## Installation
 
-    Install-Package Auth0-ASPNET-Owin
+For using inside an ASP.NET MVC project you can install the `Auth0-ASPNET-Owin` package:
+
+```
+Install-Package Auth0-ASPNET-Owin
+```
+
+The package above also installs an MVC controller which handles the callback from the server. If you want to use just the OWIN middleware, without any dependencies on MVC, then you can use the `Auth0-ASPNET-Owin-Libs` package: 
+
+```
+Install-Package Auth0-ASPNET-Owin-Libs
+```
 
 ## Usage
 
