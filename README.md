@@ -1,6 +1,6 @@
 Owin/Katana Authentication Handler for Auth0. Plugs into the ASP.NET 4.5 Owin infrastructure (middleware) and extends default providers with more social providers such as Amazon, Facebook, GitHub, LinkedIn, LiveId, Google, Twitter, PayPal and vKontakte. Also integrates with Enterprise providers like any IdP that speaks SAML Protocol, ADFS, Google Apps, ADFS, Windows Azure AD, etc.
 
-> Note: ASP.NET 5 support is available in the following repository https://github.com/auth0/auth0-aspnet5
+> Note: ASP.NET Core support is available in the following repository https://github.com/auth0/auth0-aspnetcore
 
 ## Quickstart
 
