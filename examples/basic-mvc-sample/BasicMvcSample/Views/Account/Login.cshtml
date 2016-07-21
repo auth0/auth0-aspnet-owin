@@ -8,20 +8,22 @@
     embeded area
 </div>
 @Html.AntiForgeryToken()
-<script src="https://cdn.auth0.com/js/lock-9.0.js"></script>
+<script src="http://cdn.auth0.com/js/lock/10.0.0-rc.2/lock.min.js"></script>
 <script>
 
-    var lock = new Auth0Lock('@ConfigurationManager.AppSettings["auth0:ClientId"]', '@ConfigurationManager.AppSettings["auth0:Domain"]');
+    var lock = new Auth0Lock('@ConfigurationManager.AppSettings["auth0:ClientId"]', '@ConfigurationManager.AppSettings["auth0:Domain"]',
+        {
+            container: 'root',
+            auth: {                
+                redirectUrl: window.location.origin + '/signin-auth0',
+                responseType: 'code',
+                params: {
+                    scope: 'openid profile'
+                }
+            }
+        });
 
     var xsrf = document.getElementsByName("__RequestVerificationToken")[0].value;
 
-    lock.show({
-        container: 'root',
-        callbackURL: window.location.origin + '/signin-auth0',
-        responseType: 'code',
-        authParams: {
-            scope: 'openid profile',
-            state: 'xsrf=' + xsrf + '&ru=' + '@ViewBag.ReturnUrl'
-        }
-    });
+    lock.show();
 </script>
