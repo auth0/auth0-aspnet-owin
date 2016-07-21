@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Auth0-ASPNET-Owin-Libs</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Configure Auth0 with ASP.NET 4.5 (Owin) - Libraries Only</title>
     <authors>Auth0</authors>
     <owners>Auth0</owners>
@@ -18,9 +18,9 @@
     <tags>asp.net OWIN katana authentication auth0 linkedin amazon google twitter facebook github vkontakte windowslive waad adfs saml google-apps</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="Microsoft.Owin" version="2.0.0"  />
-        <dependency id="Microsoft.Owin.Security" version="2.0.0" />
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Microsoft.Owin" version="3.0.1"  />
+        <dependency id="Microsoft.Owin.Security" version="3.0.1" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="Owin" version="1.0" />
       </group>
     </dependencies>
