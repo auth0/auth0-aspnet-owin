@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth0.Owin", "src\Auth0.Owin\Auth0.Owin.csproj", "{49650EA7-69AE-4EA6-A308-810C4738D663}"
 EndProject
@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{E2DB39FE
 	ProjectSection(SolutionItems) = preProject
 		nuget\Auth0-ASPNET-Owin-Libs.nuspec = nuget\Auth0-ASPNET-Owin-Libs.nuspec
 		nuget\Auth0-ASPNET-Owin.nuspec = nuget\Auth0-ASPNET-Owin.nuspec
+		Auth0.OpenIdConnectSigningKeyResolver.nuspec = Auth0.OpenIdConnectSigningKeyResolver.nuspec
 		nuget\README-Libs.txt = nuget\README-Libs.txt
 		nuget\README.txt = nuget\README.txt
 	EndProjectSection
@@ -32,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth0.Owin.Tests", "test\Auth0.Owin.Tests\Auth0.Owin.Tests.csproj", "{D15A5425-31F7-4FD2-896F-2AB2C47F6DF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth0.Owin.OpenIdConnectSigningKeyResolver", "src\Auth0.Owin.OpenIdConnectSigningKeyResolver\Auth0.Owin.OpenIdConnectSigningKeyResolver.csproj", "{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +96,22 @@ Global
 		{D15A5425-31F7-4FD2-896F-2AB2C47F6DF7}.Release|x64.Build.0 = Release|Any CPU
 		{D15A5425-31F7-4FD2-896F-2AB2C47F6DF7}.Release|x86.ActiveCfg = Release|Any CPU
 		{D15A5425-31F7-4FD2-896F-2AB2C47F6DF7}.Release|x86.Build.0 = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|ARM.Build.0 = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|x64.Build.0 = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|ARM.Build.0 = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|x64.Build.0 = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,5 +123,6 @@ Global
 		{6391DD9B-1D26-4FB7-BC1B-0E18F310EDAF} = {A1D75471-5CDA-457D-84F1-2CB6B2ABDA57}
 		{E4851FEC-942E-488C-8438-63338CD72203} = {6391DD9B-1D26-4FB7-BC1B-0E18F310EDAF}
 		{D15A5425-31F7-4FD2-896F-2AB2C47F6DF7} = {1E3AABD0-2D92-4ACB-A652-FA307FBAA24E}
+		{982C7FA6-C798-40C0-AAB0-FDB1E075C7EA} = {454C4C96-3B49-4BDC-A74D-2BDAC7D6B5F1}
 	EndGlobalSection
 EndGlobal
