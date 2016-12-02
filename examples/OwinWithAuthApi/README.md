@@ -53,7 +53,7 @@ var authResponse = await auth.Authenticate(new AuthenticationRequest
 This will contain the JWT token, which you use next to obtain information about the user:
 
 ```
-User user = await auth.GetTokenInfo(authResponse.IdToken);
+User user = await auth.GetTokenInfoAsync(authResponse.IdToken);
 ```
 
 Finally you need to construct a `ClaimsIdentity` and sign the user in:
