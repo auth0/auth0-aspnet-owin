@@ -40,7 +40,7 @@ var auth = new Auth0.AuthenticationApi.AuthenticationApiClient(new Uri("https://
 Next, you can authenticate the user:
 
 ```
-var authResponse = await auth.Authenticate(new AuthenticationRequest
+var authResponse = await auth.AuthenticateAsync(new AuthenticationRequest
 {
     Connection = "Username-Password-Authentication",
     ClientId = ConfigurationManager.AppSettings["auth0:ClientId"],
