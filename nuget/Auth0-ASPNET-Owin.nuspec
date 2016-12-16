@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Auth0-ASPNET-Owin</id>
-    <version>1.0.4</version>
+    <version>1.1.0</version>
     <title>Configure Auth0 with ASP.NET 4.5 (Owin)</title>
     <authors>Auth0</authors>
     <owners>Auth0</owners>

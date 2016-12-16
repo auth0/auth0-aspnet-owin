@@ -26,7 +26,9 @@ namespace Auth0.Owin
             IdToken = idToken;
             RefreshToken = refreshToken;
 
-            Id = TryGetValue(user, "user_id");
+            Id = TryGetValue(user, "sub");
+            if (string.IsNullOrEmpty(Id))
+                Id = TryGetValue(user, "user_id");
             Name = TryGetValue(user, "name");
             FirstName = TryGetValue(user, "given_name");
             LastName = TryGetValue(user, "family_name");
@@ -34,9 +36,9 @@ namespace Auth0.Owin
             Picture = TryGetValue(user, "picture");
             Nickname = TryGetValue(user, "nickname");
 
-            Connection = Connection = user["identities"][0]["connection"].ToString();
-            Provider = user["identities"][0]["provider"].ToString();
-            ProviderAccessToken = user["identities"][0]["access_token"] != null ? user["identities"][0]["access_token"].ToString() : null;
+            Connection = user["identities"]?[0]?["connection"]?.ToString();
+            Provider = user["identities"]?[0]?["provider"]?.ToString();
+            ProviderAccessToken = user["identities"]?[0]?["access_token"] != null ? user["identities"][0]["access_token"].ToString() : null;
         }
 
         /// <summary>
