@@ -1,33 +1,30 @@
-﻿@using Auth0OwinTest.Models
+﻿@using System.Configuration
+@using Auth0OwinTest.Models
 @model LoginViewModel
 @{
     ViewBag.Title = "Log in";
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-    <div class="col-md-12">
-        
-        <button onclick="window.signin();">Login</button>
-    </div>
+<div id="root" style="width: 320px; margin: 40px auto;">
 </div>
 
 @section Scripts {
 
-<script src="https://cdn.auth0.com/js/lock-8.2.min.js"></script>
-<script type="text/javascript">
+    <script src="https://cdn.auth0.com/js/lock/10.0/lock.min.js"></script>
+    <script>
+        var lock = new Auth0Lock('@ConfigurationManager.AppSettings["auth0:ClientId"]',
+            '@ConfigurationManager.AppSettings["auth0:Domain"]',
+            {
+                container: 'root',
+                auth: {
+                    redirectUrl: window.location.origin + '/signin-auth0',
+                    responseType: 'code',
+                    params: {
+                        scope: 'openid'
+                    }
+                }
+            });
+        lock.show();
+    </script>
 
-  var lock = new Auth0Lock('XACGwwyX820Fso9gspzV7a90WxOPcYEm', 'jerrie.auth0.com');
-
-
-  function signin() {
-    lock.show({
-        callbackURL: 'http://localhost:65453/signin-auth0'
-      , responseType: 'code'
-      , authParams: {
-        scope: 'openid profile'
-      }
-    });
-  }
-</script>
 }

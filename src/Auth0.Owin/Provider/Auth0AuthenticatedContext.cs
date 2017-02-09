@@ -30,6 +30,8 @@ namespace Auth0.Owin
             if (string.IsNullOrEmpty(Id))
                 Id = TryGetValue(user, "user_id");
             Name = TryGetValue(user, "name");
+            if (string.IsNullOrEmpty(Name))
+                Name = Id;
             FirstName = TryGetValue(user, "given_name");
             LastName = TryGetValue(user, "family_name");
             Email = TryGetValue(user, "email");
