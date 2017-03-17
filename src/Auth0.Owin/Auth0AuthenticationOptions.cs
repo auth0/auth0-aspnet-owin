@@ -33,8 +33,6 @@ namespace Auth0.Owin
 
             Connection = string.Empty;
             Domain = string.Empty;
-            SaveIdToken = true;
-            SaveAccessToken = true;
             EnableDiagnostics = true;
         }
 
