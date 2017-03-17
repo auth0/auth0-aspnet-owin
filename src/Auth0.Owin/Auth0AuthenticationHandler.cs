@@ -216,6 +216,31 @@ namespace Auth0.Owin
             return Task.FromResult<object>(null);
         }
 
+        protected override Task ApplyResponseGrantAsync()
+        {
+            AuthenticationResponseRevoke signout = Helper.LookupSignOut(Options.AuthenticationType, Options.AuthenticationMode);
+            if (signout != null)
+            {
+                var logoutUri = $"https://{Options.Domain}/v2/logout?client_id={Options.ClientId}";
+
+                var postLogoutUri = signout.Properties.RedirectUri;
+                if (!string.IsNullOrEmpty(postLogoutUri))
+                {
+                    if (postLogoutUri.StartsWith("/"))
+                    {
+                        // transform to absolute
+                        postLogoutUri = Request.Scheme + "://" + Request.Host + Request.PathBase +
+                                        postLogoutUri;
+                    }
+                    logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
+                }
+
+                Response.Redirect(logoutUri);
+            }
+
+            return base.ApplyResponseGrantAsync();
+        }
+
         public override async Task<bool> InvokeAsync()
         {
             return await InvokeReplyPathAsync();

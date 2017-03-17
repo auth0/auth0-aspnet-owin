@@ -24,7 +24,11 @@ namespace Auth0.Owin
             Caption = Constants.DefaultAuthenticationType;
             CallbackPath = new PathString("/signin-auth0");
             AuthenticationMode = AuthenticationMode.Passive;
-            Scope = new List<string>();
+            Scope = new List<string>
+            {
+                "openid",
+                "profile"
+            };
             BackchannelTimeout = TimeSpan.FromSeconds(60);
 
             Connection = string.Empty;

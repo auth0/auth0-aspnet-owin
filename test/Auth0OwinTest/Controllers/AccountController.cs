@@ -51,10 +51,12 @@ namespace Auth0OwinTest.Controllers
             // Extract tokens
             string accessToken = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == "access_token")?.Value;
             string idToken = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == "id_token")?.Value;
+            string refreshToken = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == "refresh_token")?.Value;
 
             // Save tokens in ViewBag
             ViewBag.AccessToken = accessToken;
             ViewBag.IdToken = idToken;
+            ViewBag.RefreshToken = refreshToken;
 
             return View();
         }

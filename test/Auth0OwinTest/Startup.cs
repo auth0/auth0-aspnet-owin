@@ -29,17 +29,13 @@ namespace Auth0OwinTest
             });
 
             // Configure Auth0 authentication
-            app.UseAuth0Authentication(new Auth0AuthenticationOptions()
+            var options = new Auth0AuthenticationOptions()
             {
                 Domain = auth0Domain,
                 ClientId = auth0ClientId,
                 ClientSecret = auth0ClientSecret,
 
-                Scope = new List<string>
-                {
-                    "openid",
-                    "profile"
-                },
+                SaveRefreshToken = true,
 
                 //Provider = new Auth0AuthenticationProvider()
                 //{
@@ -50,7 +46,9 @@ namespace Auth0OwinTest
                 //        context.Response.Redirect(context.RedirectUri);
                 //    }
                 //}
-            });
+            };
+            options.Scope.Add("offline_access");
+            app.UseAuth0Authentication(options);
 
         }
     }
