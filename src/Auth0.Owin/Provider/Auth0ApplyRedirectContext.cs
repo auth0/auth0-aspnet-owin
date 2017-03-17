@@ -14,7 +14,7 @@ namespace Auth0.Owin
         /// </summary>
         /// <param name="context">The OWIN request context</param>
         /// <param name="options">The Auth0 middleware options</param>
-        /// <param name="properties">The authenticaiton properties of the challenge</param>
+        /// <param name="properties">The authentication properties of the challenge</param>
         /// <param name="redirectUri">The initial redirect URI</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "3#",
             Justification = "Represents header value")]
@@ -30,7 +30,7 @@ namespace Auth0.Owin
         /// Gets the URI used for the redirect operation.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Represents header value")]
-        public string RedirectUri { get; private set; }
+        public string RedirectUri { get; set; }
 
         /// <summary>
         /// Gets the authenticaiton properties of the challenge

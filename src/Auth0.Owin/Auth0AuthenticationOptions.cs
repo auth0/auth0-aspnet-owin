@@ -20,6 +20,7 @@ namespace Auth0.Owin
         public Auth0AuthenticationOptions()
             : base(Constants.DefaultAuthenticationType)
         {
+            AuthenticationType = Constants.DefaultAuthenticationType;
             Caption = Constants.DefaultAuthenticationType;
             CallbackPath = new PathString("/signin-auth0");
             AuthenticationMode = AuthenticationMode.Passive;
@@ -29,6 +30,7 @@ namespace Auth0.Owin
             Connection = string.Empty;
             Domain = string.Empty;
             SaveIdToken = true;
+            SaveAccessToken = true;
             EnableDiagnostics = true;
         }
 
@@ -45,6 +47,8 @@ namespace Auth0.Owin
         public string Connection { get; set; }
 
         public string Domain { get; set; }
+
+        public bool SaveAccessToken { get; set; }
 
         public bool SaveIdToken { get; set; }
 

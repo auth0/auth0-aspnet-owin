@@ -59,14 +59,6 @@ namespace Auth0.Owin
                     return new AuthenticationTicket(null, properties);
                 }
 
-                var tokenRequestParameters = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "client_id={0}&redirect_uri={1}&client_secret={2}&code={3}&grant_type=authorization_code",
-                    Uri.EscapeDataString(Options.ClientId),
-                    Uri.EscapeDataString(GenerateRedirectUri(properties)),
-                    Uri.EscapeDataString(Options.ClientSecret),
-                    code);
-
                 var body = new Dictionary<string, string> {
                     { "client_id", Options.ClientId },
                     { "redirect_uri", GenerateRedirectUri(properties) },
@@ -130,8 +122,8 @@ namespace Auth0.Owin
                     context.Identity.AddClaim(new Claim("id_token", context.IdToken, ClaimValueTypes.String, Constants.Auth0Issuer));
                 if (Options.SaveRefreshToken && !string.IsNullOrWhiteSpace(context.RefreshToken))
                     context.Identity.AddClaim(new Claim("refresh_token", context.RefreshToken, ClaimValueTypes.String, Constants.Auth0Issuer));
-
-                context.Identity.AddClaim(new Claim("access_token", context.AccessToken, ClaimValueTypes.String, Constants.Auth0Issuer));
+                if (Options.SaveAccessToken && !string.IsNullOrWhiteSpace(context.AccessToken))
+                    context.Identity.AddClaim(new Claim("access_token", context.AccessToken, ClaimValueTypes.String, Constants.Auth0Issuer));
 
                 context.Properties = properties ?? new AuthenticationProperties();
 
