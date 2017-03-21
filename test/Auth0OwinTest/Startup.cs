@@ -35,8 +35,6 @@ namespace Auth0OwinTest
                 ClientId = auth0ClientId,
                 ClientSecret = auth0ClientSecret,
 
-                SaveRefreshToken = true,
-
                 //Provider = new Auth0AuthenticationProvider()
                 //{
                 //    OnApplyRedirect = context =>
@@ -47,7 +45,6 @@ namespace Auth0OwinTest
                 //    }
                 //}
             };
-            options.Scope.Add("offline_access");
             app.UseAuth0Authentication(options);
 
         }
