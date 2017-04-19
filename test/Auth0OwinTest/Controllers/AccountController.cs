@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
@@ -18,10 +19,15 @@ namespace Auth0OwinTest.Controllers
         public void Logout()
         {
             HttpContext.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-            HttpContext.GetOwinContext().Authentication.SignOut(new AuthenticationProperties
-            {
-                RedirectUri = Url.Action("Index", "Home")
-            }, "Auth0");
+            HttpContext.GetOwinContext()
+                .Authentication.SignOut(new AuthenticationProperties(
+                    new Dictionary<string, string>
+                    {
+                        {".federated", "true"}
+                    })
+                {
+                    RedirectUri = Url.Action("Index", "Home"),
+                }, "Auth0");
         }
 
         [Authorize]
@@ -84,7 +90,7 @@ namespace Auth0OwinTest.Controllers
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
+            var properties = new AuthenticationProperties {RedirectUri = RedirectUri};
             if (UserId != null)
             {
                 properties.Dictionary[XsrfKey] = UserId;

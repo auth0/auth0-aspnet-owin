@@ -221,8 +221,10 @@ namespace Auth0.Owin
             AuthenticationResponseRevoke signout = Helper.LookupSignOut(Options.AuthenticationType, Options.AuthenticationMode);
             if (signout != null)
             {
+                // Base logout url
                 var logoutUri = $"https://{Options.Domain}/v2/logout?client_id={Options.ClientId}";
 
+                // Add redirect after logout
                 var postLogoutUri = signout.Properties.RedirectUri;
                 if (!string.IsNullOrEmpty(postLogoutUri))
                 {
@@ -234,6 +236,11 @@ namespace Auth0.Owin
                     }
                     logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
                 }
+
+                // Handle federated logout
+                if (signout.Properties.Dictionary.ContainsKey(".federated") &&
+                    signout.Properties.Dictionary[".federated"] == "true")
+                    logoutUri += "&federated";
 
                 Response.Redirect(logoutUri);
             }
