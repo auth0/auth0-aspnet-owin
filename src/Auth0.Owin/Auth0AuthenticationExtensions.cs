@@ -49,13 +49,14 @@ namespace Owin
             string clientId,
             string clientSecret,
             string domain,
-            string redirectPath = "/Auth0Account/ExternalLoginCallback",
+            string redirectPath = "/",
             string displayName = "Auth0",
             string connection = null,
             bool saveIdToken = true,
             string scopes = "openid",
             IAuth0AuthenticationProvider provider = null,
-            bool saveRefreshToken = false)
+            bool saveRefreshToken = false,
+            string errorRedirectPath = "/")
         {
             return UseAuth0Authentication(
                 app,
@@ -65,6 +66,7 @@ namespace Owin
                     ClientSecret = clientSecret,
                     Domain = domain,
                     RedirectPath = new PathString(redirectPath),
+                    ErrorRedirectPath = new PathString(errorRedirectPath),
                     Caption = displayName,
                     Connection = connection,
                     AuthenticationType = string.IsNullOrEmpty(connection) ? Constants.DefaultAuthenticationType : connection,

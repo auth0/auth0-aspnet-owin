@@ -34,6 +34,7 @@ namespace Auth0OwinTest
                 Domain = auth0Domain,
                 ClientId = auth0ClientId,
                 ClientSecret = auth0ClientSecret,
+                ErrorRedirectPath = new PathString("/Account/LoginError")
 
                 //Provider = new Auth0AuthenticationProvider()
                 //{

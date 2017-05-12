@@ -30,6 +30,14 @@ namespace Auth0OwinTest.Controllers
                 }, "Auth0");
         }
 
+        public ActionResult LoginError(string error, string error_description)
+        {
+            ViewBag.Error = error;
+            ViewBag.ErrorDescription = error_description;
+
+            return View();
+        }
+
         [Authorize]
         public ActionResult Claims()
         {

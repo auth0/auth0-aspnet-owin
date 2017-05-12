@@ -34,6 +34,9 @@ namespace Auth0.Owin
             Connection = string.Empty;
             Domain = string.Empty;
             EnableDiagnostics = true;
+
+            RedirectPath = new PathString("/");
+            ErrorRedirectPath = new PathString("/");
         }
 
         /// <summary>
@@ -97,6 +100,11 @@ namespace Auth0.Owin
         /// Default value is "/signin-auth0".
         /// </summary>
         public PathString CallbackPath { get; set; }
+
+        /// <summary>
+        /// The request path within the application's base path where the user-agent will be returned when an error occurred during authentication.
+        /// </summary>
+        public PathString ErrorRedirectPath { get; set; }
 
         /// <summary>
         /// The request path within the application's base path where the user-agent will be returned when the middleware is completed.

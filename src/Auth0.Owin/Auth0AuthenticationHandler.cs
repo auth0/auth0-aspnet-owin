@@ -261,7 +261,7 @@ namespace Auth0.Owin
                 {
                     _logger.WriteVerbose("Remote server returned an error: " + Request.QueryString);
 
-                    var redirectUrl = Options.RedirectPath + Request.QueryString;
+                    var redirectUrl = Options.ErrorRedirectPath + Request.QueryString;
                     Response.Redirect(redirectUrl);
                     return true;
                 }
