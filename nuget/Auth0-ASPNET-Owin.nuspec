@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Auth0-ASPNET-Owin</id>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
     <title>Auth0 OWIN Middleware</title>
     <authors>Auth0</authors>
     <owners>Auth0</owners>
@@ -14,11 +14,14 @@
       OWIN Middleware to integrate Auth0 into your ASP.NET Application.
     </description>
     <releaseNotes>
+      2.2.0
+      - Adds support for ErrorRedirectPath to redirect user when error occurs during login
+      
       2.1.0
-        - Adds support for Federated logout
-        
+      - Adds support for Federated logout
+
       2.0.0
-        - Support for OIDC clients
+      - Support for OIDC clients
     </releaseNotes>
     <tags>asp.net OWIN katana authentication auth0 linkedin amazon google twitter facebook github vkontakte windowslive waad adfs saml google-apps</tags>
     <dependencies>
