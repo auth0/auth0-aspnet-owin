@@ -231,8 +231,7 @@ namespace Auth0.Owin
                     if (postLogoutUri.StartsWith("/"))
                     {
                         // transform to absolute
-                        postLogoutUri = Request.Scheme + "://" + Request.Host + Request.PathBase +
-                                        postLogoutUri;
+                        postLogoutUri = Request.Scheme + "://" + Request.Host + postLogoutUri;
                     }
                     logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
                 }
@@ -261,7 +260,7 @@ namespace Auth0.Owin
                 {
                     _logger.WriteVerbose("Remote server returned an error: " + Request.QueryString);
 
-                    var redirectUrl = Options.ErrorRedirectPath + Request.QueryString;
+                    var redirectUrl = RequestPathBase + Options.ErrorRedirectPath + Request.QueryString;
                     Response.Redirect(redirectUrl);
                     return true;
                 }
@@ -292,7 +291,7 @@ namespace Auth0.Owin
 
                 if (!context.IsRequestCompleted)
                 {
-                    string redirectUri = context.RedirectUri ?? Options.RedirectPath.ToString();
+                    string redirectUri = context.RedirectUri ?? RequestPathBase + Options.RedirectPath.ToString();
                     if (context.Identity == null)
                     {
                         // add a redirect hint that sign-in failed in some way
