@@ -67,6 +67,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Provider\Auth0ApplyLogoutContext.cs" />
     <Compile Include="Provider\Auth0CustomizeTokenExchangeRedirectUriContext.cs" />
     <Compile Include="Provider\Auth0TokenExchangeFailedContext.cs" />
     <Compile Include="Provider\Auth0ApplyRedirectContext.cs" />

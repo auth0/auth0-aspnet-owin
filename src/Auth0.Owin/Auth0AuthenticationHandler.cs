@@ -241,7 +241,9 @@ namespace Auth0.Owin
                     signout.Properties.Dictionary[".federated"] == "true")
                     logoutUri += "&federated";
 
-                Response.Redirect(logoutUri);
+                var logoutContext = new Auth0ApplyLogoutContext(
+                    Context, Options, signout.Properties, logoutUri);
+                Options.Provider.ApplyLogout(logoutContext);
             }
 
             return base.ApplyResponseGrantAsync();
