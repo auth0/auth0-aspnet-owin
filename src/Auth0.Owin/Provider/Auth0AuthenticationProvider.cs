@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security;
 
 namespace Auth0.Owin
 {
@@ -15,8 +16,8 @@ namespace Auth0.Owin
         {
             OnAuthenticated = context => Task.FromResult<object>(null);
             OnReturnEndpoint = context => Task.FromResult<object>(null);
-            OnApplyRedirect = context =>
-                context.Response.Redirect(context.RedirectUri);
+            OnApplyRedirect = context => context.Response.Redirect(context.RedirectUri);
+            OnApplyLogout = context => context.Response.Redirect(context.LogoutUri);
             OnTokenExchangeFailed = context => { };
             OnCustomizeTokenExchangeRedirectUri = context => { };
         }
@@ -35,6 +36,11 @@ namespace Auth0.Owin
         /// Gets or sets the delegate that is invoked when the ApplyRedirect method is invoked.
         /// </summary>
         public Action<Auth0ApplyRedirectContext> OnApplyRedirect { get; set; }
+
+        /// <summary>
+        /// Gets or sets the delegate that is invoked when the ApplyRedirectForLogout method is invoked.
+        /// </summary>
+        public Action<Auth0ApplyLogoutContext> OnApplyLogout { get; set; }
 
         /// <summary>
         /// Gets or sets the delegate that is invoked when the CustomizeTokenExchangeRedirectUri method is invoked.
@@ -75,6 +81,14 @@ namespace Auth0.Owin
             OnApplyRedirect(context);
         }
 
+        /// <summary>
+        /// Called when the logout endpoint is called.
+        /// </summary>
+        /// <param name="context">Contains redirect URI and <see cref="AuthenticationProperties"/> of the logout  </param>
+        public virtual void ApplyLogout(Auth0ApplyLogoutContext context)
+        {
+            OnApplyLogout(context);
+        }
 
         /// <summary>
         /// Called the redirect_uri is generated during the token exchange. 
