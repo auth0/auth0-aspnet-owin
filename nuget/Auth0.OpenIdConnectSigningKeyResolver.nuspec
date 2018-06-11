@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Auth0.OpenIdConnectSigningKeyResolver</id>
-    <version>1.0.0</version>
-    <title>Resolves Signing Key when using RS256 JWTs Auth0 with ASP.NET 4.5 (Owin)</title>
+    <version>2.0.0</version>
+    <title>Resolves Signing Key when using RS256 JWTs Auth0 with ASP.NET 4.5 (OWIN 4.x)</title>
     <authors>Auth0</authors>
     <owners>Auth0</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -11,12 +11,12 @@
     <iconUrl>http://secure.gravatar.com/avatar/805765c256ff8617fcad483b5476faf2</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      Resolves Signing Key when using RS256 tokens Auth0 with ASP.NET 4.5 (Owin)
+      Resolves Signing Key when using RS256 tokens Auth0 with ASP.NET 4.5 (OWIN 4.x)
     </description>
     <tags>asp.net OWIN openidconnect oidc jwt</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
-        <dependency id="Microsoft.IdentityModel.Protocol.Extensions" version="1.0.3.308261200" />
+      <group targetFramework="net45">
+        <dependency id="Microsoft.IdentityModel.Protocols.OpenIdConnect" version="5.2.2" />
       </group>
     </dependencies>
   </metadata>

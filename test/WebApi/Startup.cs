@@ -3,8 +3,8 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
 using Owin;
 using System.Configuration;
-using System.IdentityModel.Tokens;
 using Auth0.Owin;
+using Microsoft.IdentityModel.Tokens;
 
 [assembly: OwinStartup(typeof(WebApi.Startup))]
 
@@ -26,7 +26,7 @@ namespace WebApi
                     {
                         ValidAudience = apiIdentifier,
                         ValidIssuer = domain,
-                        IssuerSigningKeyResolver = (token, securityToken, identifier, parameters) => keyResolver.GetSigningKey(identifier)
+                        IssuerSigningKeyResolver = (token, securityToken, kid, parameters) => keyResolver.GetSigningKey(kid)
                     }
                 });
 
