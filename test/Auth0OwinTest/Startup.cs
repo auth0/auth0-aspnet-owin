@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
+using System.Text;
 using System.Threading.Tasks;
-using Auth0.Owin;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 
 [assembly: OwinStartup(typeof(Auth0OwinTest.Startup))]
@@ -28,55 +30,60 @@ namespace Auth0OwinTest
                 LoginPath = new PathString("/Account/Login")
             });
 
-            // Configure Auth0 authentication
-            var provider = new Auth0AuthenticationProvider()
+            // Uncomment for HS256
+            //var keyAsBytes = Encoding.UTF8.GetBytes(auth0ClientSecret);
+            //var issuerSigningKey = new SymmetricSecurityKey(keyAsBytes);
+
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
-                //// When logging out
-                //OnApplyLogout = context =>
-                //{
-                //    if (System.Configuration.ConfigurationManager.AppSettings["ForceHttps"] == "true" &&
-                //        context.LogoutUri.Contains("&returnTo=http%3A%2F%2F"))
-                //    {
-                //        context.LogoutUri = context.LogoutUri.Replace("&returnTo=http%3A%2F%2F",
-                //            "&returnTo=https%3A%2F%2F");
-                //    }
+                AuthenticationType = "Auth0",
+                
+                Authority = $"https://{auth0Domain}",
 
-                //    context.Response.Redirect(context.LogoutUri);
-                //},
-                //// When redirecting to /authorize
-                //OnApplyRedirect = context =>
-                //{
-                //    if (System.Configuration.ConfigurationManager.AppSettings["ForceHttps"] == "true" &&
-                //        context.RedirectUri.Contains("&redirect_uri=http%3A%2F%2F"))
-                //    {
-                //        context.RedirectUri = context.RedirectUri.Replace("&redirect_uri=http%3A%2F%2F",
-                //            "&redirect_uri=https%3A%2F%2F");
-                //    }
-
-                //    context.Response.Redirect(context.RedirectUri);
-                //},
-                //// When doing the code exchange
-                //OnCustomizeTokenExchangeRedirectUri = (context) =>
-                //{
-                //    var redirectUri = context.RedirectUri;
-
-                //    if (System.Configuration.ConfigurationManager.AppSettings["ForceHttps"] == "true"
-                //        && redirectUri.StartsWith("http://"))
-                //    {
-                //        context.RedirectUri = redirectUri.Replace("http://", "https://");
-                //    }
-                //}
-            };
-            var options = new Auth0AuthenticationOptions()
-            {
-                Domain = auth0Domain,
                 ClientId = auth0ClientId,
                 ClientSecret = auth0ClientSecret,
-                ErrorRedirectPath = new PathString("/Account/LoginError"),
 
-                Provider = provider
-            };
-            app.UseAuth0Authentication(options);
+                RedirectUri = "http://localhost:65453/signin-auth0",
+                PostLogoutRedirectUri = "http://localhost:65453/",
+
+                ResponseType = OpenIdConnectResponseType.CodeIdToken,
+                Scope = OpenIdConnectScope.OpenIdProfile,
+
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    // Uncomment for HS256
+                    //IssuerSigningKey = issuerSigningKey,
+                    NameClaimType = "name"
+                },
+
+                Notifications = new OpenIdConnectAuthenticationNotifications
+                {
+                    
+                    RedirectToIdentityProvider = notification =>
+                    {
+                        if (notification.ProtocolMessage.RequestType == OpenIdConnectRequestType.Logout)
+                        {
+                            var logoutUri = $"https://{auth0Domain}/v2/logout?client_id={auth0ClientId}";
+
+                            var postLogoutUri = notification.ProtocolMessage.PostLogoutRedirectUri;
+                            if (!string.IsNullOrEmpty(postLogoutUri))
+                            {
+                                if (postLogoutUri.StartsWith("/"))
+                                {
+                                    // transform to absolute
+                                    var request = notification.Request;
+                                    postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
+                                }
+                                logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
+                            }
+
+                            notification.Response.Redirect(logoutUri);
+                            notification.HandleResponse();
+                        }
+                        return Task.FromResult(0);
+                    }
+                }
+            });
 
         }
     }

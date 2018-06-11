@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
@@ -12,22 +11,19 @@ namespace Auth0OwinTest.Controllers
     {
         public ActionResult Login(string returnUrl)
         {
-            return new ChallengeResult("Auth0", returnUrl ?? Url.Action("Index", "Home"));
+            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties
+                {
+                    RedirectUri = returnUrl ?? Url.Action("Index", "Home")
+                },
+                "Auth0");
+            return new HttpUnauthorizedResult();
         }
 
         [Authorize]
         public void Logout()
         {
             HttpContext.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-            HttpContext.GetOwinContext()
-                .Authentication.SignOut(new AuthenticationProperties(
-                    new Dictionary<string, string>
-                    {
-                        {".federated", "true"}
-                    })
-                {
-                    RedirectUri = Url.Action("Index", "Home"),
-                }, "Auth0");
+            HttpContext.GetOwinContext().Authentication.SignOut("Auth0");
         }
 
         public ActionResult LoginError(string error, string error_description)
