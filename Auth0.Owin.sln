@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{E2DB39FE
 	ProjectSection(SolutionItems) = preProject
 		nuget\Auth0-ASPNET-Owin-Libs.nuspec = nuget\Auth0-ASPNET-Owin-Libs.nuspec
 		nuget\Auth0-ASPNET-Owin.nuspec = nuget\Auth0-ASPNET-Owin.nuspec
-		Auth0.OpenIdConnectSigningKeyResolver.nuspec = Auth0.OpenIdConnectSigningKeyResolver.nuspec
+		nuget\Auth0.OpenIdConnectSigningKeyResolver.nuspec = nuget\Auth0.OpenIdConnectSigningKeyResolver.nuspec
 		nuget\README-Libs.txt = nuget\README-Libs.txt
 		nuget\README.txt = nuget\README.txt
 	EndProjectSection
