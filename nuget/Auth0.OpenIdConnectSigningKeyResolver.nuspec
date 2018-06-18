@@ -15,12 +15,12 @@
     </description>
     <tags>asp.net OWIN openidconnect oidc jwt</tags>
     <dependencies>
-      <group targetFramework="net45">
+      <group targetFramework="net452">
         <dependency id="Microsoft.IdentityModel.Protocols.OpenIdConnect" version="5.2.2" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\src\Auth0.Owin.OpenIdConnectSigningKeyResolver\bin\release\Auth0.Owin.OpenIdConnectSigningKeyResolver.dll" target="lib\net45\Auth0.Owin.OpenIdConnectSigningKeyResolver.dll" />
+    <file src="..\src\Auth0.Owin.OpenIdConnectSigningKeyResolver\bin\release\Auth0.Owin.OpenIdConnectSigningKeyResolver.dll" target="lib\net452\Auth0.Owin.OpenIdConnectSigningKeyResolver.dll" />
   </files>
 </package>
