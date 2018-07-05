@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IdentityModel.Tokens;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Linq;
 using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Auth0.Owin
 {
@@ -13,27 +11,14 @@ namespace Auth0.Owin
 
         public OpenIdConnectSigningKeyResolver(string authority)
         {
-            var cm = new ConfigurationManager<OpenIdConnectConfiguration>($"{authority.TrimEnd('/')}/.well-known/openid-configuration");
+            var cm = new ConfigurationManager<OpenIdConnectConfiguration>($"{authority.TrimEnd('/')}/.well-known/openid-configuration", new OpenIdConnectConfigurationRetriever());
             openIdConfig = AsyncHelper.RunSync(async () => await cm.GetConfigurationAsync());
         }
 
-        public SecurityKey GetSigningKey(SecurityKeyIdentifier identifier)
+        public SecurityKey[] GetSigningKey(string kid)
         {
             // Find the security token which matches the identifier
-            var securityToken = openIdConfig.SigningTokens.FirstOrDefault(t =>
-            {
-                // Each identifier has multiple clauses. Try and match for each
-                foreach (var securityKeyIdentifierClause in identifier)
-                {
-                    if (t.MatchesKeyIdentifierClause(securityKeyIdentifierClause))
-                        return true;
-                }
-
-                return false;
-            });
-
-            // Return the first key of the security token (if found)
-            return securityToken?.SecurityKeys.FirstOrDefault();
+            return new[] { openIdConfig.JsonWebKeySet.GetSigningKeys().FirstOrDefault(t => t.KeyId == kid) };
         }
     }
 }
