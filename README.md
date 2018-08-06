@@ -1,3 +1,7 @@
+# Security notice
+
+This package has unresolved security issue and has been deprecated. See the [security notice](SECURITY-NOTICE.md) for more details.
+
 ## Deprecation Notice
 
 Please note that the Auth0-ASPNET-OWIN NuGet package has been deprecated. Customers should migrate to the standard OWIN OpenID Connect middleware. For more information on the migration process, please refer to [Migrating to OWIN 4](https://auth0.com/docs/quickstart/webapp/aspnet-owin/04-migrating). 
